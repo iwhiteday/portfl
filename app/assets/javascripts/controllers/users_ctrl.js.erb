@@ -17,7 +17,7 @@ app.controller('UsersIndexCtrl', function($scope, $http){
 });
 
 
-app.controller('UserCtrl', function($scope, $http){
+app.controller('UserCtrl', function($scope, $http, ActionCableChannel){
     var location = document.location.pathname;
     var params = parse_url(location);
     $http.get(Routes.user_path(params.users, {format: "json"})).
@@ -50,6 +50,7 @@ app.controller('UserCtrl', function($scope, $http){
     $scope.setup = function () {
         if(!$scope.ready) {
             $('.modal').modal();
+
             $scope.ready = true;
         }
     };

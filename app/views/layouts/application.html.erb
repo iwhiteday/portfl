@@ -13,9 +13,20 @@
         <a href="/" class="brand-logo right">Portfl</a>
         <ul id="nav-mobile" class="left hide-on-med-and-down">
           <li><%= link_to 'Users', users_path %></li>
+          <li>
+            <%= link_to 'Sing up with Facebook', account_facebook_omniauth_authorize_path %>
+          </li>
+          <li>
+            <%= link_to 'Sing up with Twitter', account_twitter_omniauth_authorize_path %>
+          </li>
+          <li>
+            <%= link_to 'Sing up with Vkontakte', account_vkontakte_omniauth_authorize_path %>
+          </li>
         </ul>
       </div>
     </nav>
+    <p class="notice"><%= notice %></p>
+    <p class="alert"><%= alert %></p>
 
     <div class="container"><%= yield %></div>
     <%= javascript_include_tag 'application' %>

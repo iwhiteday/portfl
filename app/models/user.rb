@@ -5,6 +5,7 @@ class User < ApplicationRecord
   belongs_to :role
   has_many :photos, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_one :account, dependent: :destroy
 
   after_initialize :set_defaults
   after_commit :clear_cache

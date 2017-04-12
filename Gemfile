@@ -26,6 +26,14 @@ gem 'dalli'
 gem 'bower-rails'
 gem 'js-routes'
 
+gem 'devise'
+
+gem 'omniauth-twitter'
+
+gem 'omniauth-vkontakte'
+
+gem 'omniauth-facebook'
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder

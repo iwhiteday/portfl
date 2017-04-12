@@ -3,9 +3,10 @@ app.controller('CommentsCtrl', function($scope, $http, ActionCableChannel){
     $scope.comment = {};
 
 
-    var consumer = new ActionCableChannel("CommentsChannel");
+    var consumer = new ActionCableChannel("CommentsChannel", {'modal_id': $scope.photo.id});
     var callback = function(comment){
         $scope.photo.comments.push(comment);
+        $scope.commentText = "";
     };
     consumer.subscribe(callback).then(function(){
         $scope.sendToCommentsChannel = function(message){
@@ -19,24 +20,5 @@ app.controller('CommentsCtrl', function($scope, $http, ActionCableChannel){
             consumer.unsubscribe().then(function(){ $scope.sendToCommentsChannel = undefined; });
         });
     });
-//
-//    $scope.addComment = function () {
-//        comment = {};
-//        comment.user_id = 1;
-//        comment.photo_id = $scope.photo.id;
-//        comment.text = $scope.comment.text;
-//
-//        $http({
-//            method : 'POST',
-//            url : '/users/' + $scope.photo.user_id + '/photos/' + $scope.photo.id + '/comments/',
-//            data : comment
-//        })
-//            .then(function (data) {
-//                $scope.photo.comments.push(comment);
-//            }, function(data){
-//                Materialize.toast('Error status: ' + data.status, 1000);
-//            });
-//
-//        $scope.comment.text = "";
-//    }
+
 });
