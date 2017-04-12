@@ -1,0 +1,85 @@
+<div ng-controller="UserCtrl">
+  <link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
+  <meta name="action-cable-url" content="ws://localhost:3000/cable"/>
+  <p id="notice"><%= notice %></p>
+  <h2 ng-bind="user.name"></h2>
+
+  <div class="profile">
+
+    <div class="avatar-container">
+      <img ng-src="{{user.avatar.url}}"/>
+    </div>
+
+    <div class="profile-info">
+      <p>
+        <strong>Birth:</strong>
+        <span ng-bind="user.birth | date:'dd.MM.yyyy'"></span>
+      </p>
+
+      <p>
+        <strong>Weight:</strong>
+        <span ng-bind="user.weight"></span> kg
+      </p>
+
+      <p>
+        <strong>Height:</strong>
+        <span ng-bind="user.height"></span> cm
+      </p>
+
+      <p>
+        <strong>Sex:</strong>
+        <span ng-bind="user.sex"></span>
+      </p>
+    </div>
+
+    <div class="gallery-container">
+      <div id="gallery-dropzone">
+        <form id="dropform" action="/upload" class="dropzone">
+          <input type="hidden" name="user_id" ng-value="user.id"/>
+        </form>
+      </div>
+
+      <h4>Portfolio</h4>
+      <div class="gallery" >
+        <div ng-repeat="photo in user.photos" class="gallery-image-container">
+          <!--onpage image-->
+          <div class="gallery-image">
+            <a href="#photo{{photo.id}}" class="modal-trigger"><img ng-src="{{photo.url}}"/></a>
+          </div>
+          <!--modal block-->
+          <div id="photo{{photo.id}}" class="modal">
+            <div class="modal-content">
+              <div class="modal-image">
+                <div class="modal-hashtags" >
+                  <div class="chip" ng-repeat="hashtag in photo.hashtags">
+                    #{{hashtag.tag}}
+                  </div>
+                </div>
+                <img ng-src="{{photo.url}}"/>
+              </div>
+              <div class="modal-comments">
+                <p ng-repeat="comment in photo.comments">{{comment.user_id}} : {{comment.text}}</p>
+                <div class="comment-form">
+                  <form name="commentForm" ng-controller="CommentsCtrl">
+                    <input type="text" name="commentText" ng-model="commentText">
+                    <button class="btn" ng-click="sendToCommentsChannel(commentText)">Send</button>
+                  </form>
+                </div>
+                <div after-render="setup"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <%= link_to 'Edit', edit_user_path(@user) %> |
+  <%= link_to 'Back', users_path %>
+
+  <script src="<%= asset_path 'dropzone.js' %>"></script>
+  <!--<script src="<%= asset_path 'dropzone_setup.js.erb' %>"></script>-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</div>

@@ -1,0 +1,67 @@
+app.controller('UsersIndexCtrl', function($scope, $http){
+    $http.get(Routes.users_path({format: "json"})).
+        then(function (response) {
+            $scope.users = response.data;
+        });
+
+    $scope.destroy = function(user){
+        $http.delete(Routes.user_path(user.id)).
+        then(function(){
+            Materialize.toast('User ' + user.name + ' deleted');
+        });
+        var index = $scope.users.findIndex(function(o){
+            return o.id === user.id;
+        });
+        $scope.users.splice(index, 1);
+    };
+});
+
+
+app.controller('UserCtrl', function($scope, $http){
+    var location = document.location.pathname;
+    var params = parse_url(location);
+    $http.get(Routes.user_path(params.users, {format: "json"})).
+    then(function (response) {
+        $scope.user = response.data;
+        $scope.action = $scope.user.id ? 'PATCH' : 'POST';
+        $scope.$broadcast('dataload');
+    });
+
+    $scope.submit = function(form) {
+        $scope.$submitted = true;
+
+        if(form.$invalid) {
+            Materialize.toast('Form is invalid' , 1000);
+            return;
+        }
+
+        $http({
+            method : $scope.action,
+            url : Routes.user_path($scope.user.id ? $scope.user.id : ''),
+            data : $scope.user
+        })
+            .then(function (data) {
+                Materialize.toast('Status' + data.status, 1000);
+            }, function(data){
+                Materialize.toast(data.status, 1000);
+            });
+    };
+
+    $scope.setup = function () {
+        if(!$scope.ready) {
+            $('.modal').modal();
+            $scope.ready = true;
+        }
+    };
+});
+
+app.directive('afterRender', ['$timeout', function ($timeout) {
+    return {
+        restrict: 'A',
+            terminal: true,
+            transclude: false,
+            link: function (scope, element, attrs) {
+            $timeout(scope.$eval(attrs.afterRender), 0);  //Calling a scoped method
+        }
+    };
+}]);

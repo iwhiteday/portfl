@@ -1,0 +1,19 @@
+---
+development:
+  cloud_name: iwhiteday
+  api_key: '173926815667474'
+  api_secret: TVOhBImfe5XWwAEN5DNwFSa356s
+  enhance_image_tag: true
+  static_image_support: false
+production:
+  cloud_name: iwhiteday
+  api_key: '173926815667474'
+  api_secret: TVOhBImfe5XWwAEN5DNwFSa356s
+  enhance_image_tag: true
+  static_image_support: true
+test:
+  cloud_name: iwhiteday
+  api_key: '173926815667474'
+  api_secret: TVOhBImfe5XWwAEN5DNwFSa356s
+  enhance_image_tag: true
+  static_image_support: false

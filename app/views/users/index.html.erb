@@ -1,0 +1,45 @@
+<div ng-controller="UsersIndexCtrl">
+  <p id="notice"><%= notice %></p>
+
+  <h1>Users</h1>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Avatar</th>
+      <th>Birth</th>
+      <th>Weight</th>
+      <th>Height</th>
+      <th>Sex</th>
+      <th>Role</th>
+      <th colspan="3"></th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr ng-repeat="user in users">
+      <td ng-bind="user.name"></td>
+      <td>
+        <div class="image-container">
+          <img ng-src="{{user.avatar.url}}"/>
+        </div>
+      </td>
+      <td ng-bind="user.birth | date:'dd.MM.yyyy'"></td>
+      <td ng-bind="user.weight"></td>
+      <td ng-bind="user.height"></td>
+      <td ng-bind="user.sex"></td>
+      <td ng-bind="user.role.title"></td>
+      <td><a class="btn" href="users/{{user.id}}">Show</a></td>
+      <td><a class="btn" href="users/{{user.id}}/edit">Edit</a></td>
+      <td><button class="btn" ng-click="destroy(user)">Delete</button></td>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <br>
+
+  <%= link_to 'New User', new_user_path %>
+
+</div>

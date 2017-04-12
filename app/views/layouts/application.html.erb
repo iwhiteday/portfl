@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html ng-app="app">
+  <head>
+    <title>Portfl</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all' %>
+  </head>
+
+  <body>
+    <nav>
+      <div class="nav-wrapper">
+        <a href="/" class="brand-logo right">Portfl</a>
+        <ul id="nav-mobile" class="left hide-on-med-and-down">
+          <li><%= link_to 'Users', users_path %></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container"><%= yield %></div>
+    <%= javascript_include_tag 'application' %>
+  </body>
+</html>

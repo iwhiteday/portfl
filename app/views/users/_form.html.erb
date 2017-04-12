@@ -1,0 +1,40 @@
+<div ng-controller="UserCtrl">
+  <form name="userEditForm" novalidate role="form">
+    <div class="edit-form">
+      <div class="field">
+        <label for="user_name">Name:</label>
+        <input type="text" name="user[name]" id="user_name" ng-model="user.name">
+      </div>
+
+      <div class="field">
+        <label for="user_birth">Birth:</label>
+        <input type="datetime" name="user[birth]" id="user_birth" ng-model="user.birth" placeholder="yyyy-MM-dd">
+      </div>
+
+      <div class="field">
+        <label for="user_weight">Weight:</label>
+        <input type="number" name="user[weight]" id="user_weight" ng-model="user.weight">
+      </div>
+
+      <div class="field">
+        <label for="user_height">Height:</label>
+        <input type="number" name="user[height]" id="user_height" ng-model="user.height">
+      </div>
+
+      <div class="field">
+        <label>Sex:</label>
+        <select name="user[sex]" id="user_sex" ng-model="user.sex" ng-value="user.sex">
+          <% sexes_list.each do |sex|  %>
+            <%= content_tag(:option, sex.first, value: sex.first) %>
+          <% end %>
+        </select>
+      </div>
+
+
+
+      <div class="actions">
+        <button ng-click="submit(userEditForm)">Submit</button>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,107 @@
+// Place all the styles related to the users controller here.
+// They will automatically be included in application.scss.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.edit-form {
+  width: 60%;
+  margin: auto;
+}
+
+.image-container{
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+}
+
+.image-container img {
+  min-width: 100%;
+  min-height: 100%;
+  max-width: 100%;
+}
+
+.avatar-container {
+  padding: 5px;
+  border: 1px solid #ccc;
+  width: 40%;
+  height: auto;
+  overflow: hidden;
+}
+
+.avatar-container img {
+  object-position: center;
+  width: 100%;
+  height: auto;
+}
+
+.profile {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.profile-info {
+  width: 60%;
+}
+
+.profile-info p {
+  font-size: 1.4rem;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.gallery, .gallery-container {
+  width: 100%;
+  padding: 10px 15px;
+}
+
+.gallery-image {
+  width: 100%;
+}
+
+.modal {
+  height: 80% !important;
+  max-height: 80% !important;
+  width: 80% !important;
+}
+
+.modal-content {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+.modal-image {
+  height: 100%;
+  width: 100%;
+}
+
+.modal-image img {
+  height: 100%;
+  max-width: 100%;
+
+}
+
+.gallery-image img {
+  width: 100%;
+  height: auto;
+}
+
+.modal-comments {
+  flex-basis: 450px;
+}
+
+.modal-hashtags {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+}
+
+.gallery-image-container {
+  width: 24%;
+  height: 200px;
+  padding: 10px 0 10px 10px;
+  overflow: hidden;
+}
