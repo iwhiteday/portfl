@@ -5,6 +5,7 @@
     <%= csrf_meta_tags %>
 
     <%= stylesheet_link_tag    'application', media: 'all' %>
+    <%= javascript_include_tag 'application' %>
   </head>
 
   <body>
@@ -13,22 +14,28 @@
         <a href="/" class="brand-logo right">Portfl</a>
         <ul id="nav-mobile" class="left hide-on-med-and-down">
           <li><%= link_to 'Users', users_path %></li>
-          <li>
-            <%= link_to 'Sing up with Facebook', account_facebook_omniauth_authorize_path %>
-          </li>
-          <li>
-            <%= link_to 'Sing up with Twitter', account_twitter_omniauth_authorize_path %>
-          </li>
-          <li>
-            <%= link_to 'Sing up with Vkontakte', account_vkontakte_omniauth_authorize_path %>
-          </li>
+          <% if current_account %>
+            <li>You currently logged in as <b><%= current_account.user.name %></b></li>
+            <li><%= button_to('Logout', current_account, :method => :delete) %> </li>
+          <% else %>
+            <li>
+              <%= link_to 'Sign up with Facebook', account_facebook_omniauth_authorize_path %>
+            </li>
+            <li>
+              <%= link_to 'Sign up with Twitter', account_twitter_omniauth_authorize_path %>
+            </li>
+            <li>
+              <%= link_to 'Sign up with Vkontakte', account_vkontakte_omniauth_authorize_path %>
+            </li>
+            <li>
+              <%= link_to 'Sign up', new_account_path %>
+            </li>
+          <% end %>
         </ul>
       </div>
     </nav>
-    <p class="notice"><%= notice %></p>
     <p class="alert"><%= alert %></p>
 
     <div class="container"><%= yield %></div>
-    <%= javascript_include_tag 'application' %>
   </body>
 </html>

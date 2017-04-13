@@ -27,13 +27,8 @@ class UsersController < ApplicationController
 
   # GET /users/new
   def new
-    respond_to do |format|
-      format.html
-      format.json {
-        @user = User.new
-        render json: @user
-      }
-    end
+    @user = User.new
+    render json: @user
   end
 
   # GET /users/1/edit

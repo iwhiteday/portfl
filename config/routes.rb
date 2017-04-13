@@ -1,13 +1,12 @@
 Rails.application.routes.draw do
-  get 'account/new'
-
-  get 'account/create'
 
   resources :users do
     resources :photos do
       resources :comments
     end
   end
+
+  resources :accounts
 
   devise_for :accounts, :controllers => { omniauth_callbacks: 'accounts/omniauth_callbacks'}
 
