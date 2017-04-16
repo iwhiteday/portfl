@@ -1,6 +1,7 @@
 // Place all the styles related to the users controller here.
 // They will automatically be included in application.scss.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+@import "ng-sortable/dist/ng-sortable.min";
 
 .edit-form {
   width: 60%;
@@ -104,4 +105,12 @@
   height: 200px;
   padding: 10px 0 10px 10px;
   overflow: hidden;
+}
+
+#avatar {
+  cursor: pointer;
+}
+
+.avatar-variant {
+  cursor: pointer;
 }

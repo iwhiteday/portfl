@@ -2,14 +2,15 @@
 //= require angular
 //= require angular-websocket
 //= require angular-actioncable
+//= require ng-sortable
 //= require materialize
 //= require js-routes
 //= require_self
 //= require_tree ./controllers
 
-var app = angular.module("app", ['ngActionCable'])
+var app = angular.module("app", ['ngActionCable', 'as.sortable'])
     .run(function (ActionCableConfig){
-        ActionCableConfig.debug = true;
+        ActionCableConfig.debug = false;
     });
 
 function parse_url(relative_url) {

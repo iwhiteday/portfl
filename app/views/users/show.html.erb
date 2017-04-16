@@ -6,73 +6,106 @@
 
   <div class="profile">
 
-    <div class="avatar-container">
-      <img ng-src="{{user.avatar.url}}"/>
-    </div>
-
-    <div class="profile-info">
-      <p>
-        <strong>Birth:</strong>
-        <span ng-bind="user.birth | date:'dd.MM.yyyy'"></span>
-      </p>
-
-      <p>
-        <strong>Weight:</strong>
-        <span ng-bind="user.weight"></span> kg
-      </p>
-
-      <p>
-        <strong>Height:</strong>
-        <span ng-bind="user.height"></span> cm
-      </p>
-
-      <p>
-        <strong>Sex:</strong>
-        <span ng-bind="user.sex"></span>
-      </p>
-    </div>
-
-    <div class="gallery-container">
-      <div id="gallery-dropzone">
-        <form id="dropform" action="/upload" class="dropzone">
-          <input type="hidden" name="user_id" ng-value="user.id"/>
-        </form>
+    <div class="row">
+      <div class="col s12">
+        <ul class="tabs">
+          <li class="tab col s3"><a href="#profiletab">Profile</a></li>
+          <li class="tab col s3"><a class="active" href="#portfoliotab">Portfolio</a></li>
+        </ul>
       </div>
+      <div id="profiletab" class="col s12">
+        <div class="avatar-container">
+          <img id="avatar" ng-click="editAvatar();" ng-src="{{user.avatar.url}}"/>
+        </div>
 
-      <h4>Portfolio</h4>
-      <div class="gallery" >
-        <div ng-repeat="photo in user.photos" class="gallery-image-container">
-          <!--onpage image-->
-          <div class="gallery-image">
-            <a href="#photo{{photo.id}}" class="modal-trigger"><img ng-src="{{photo.url}}"/></a>
-          </div>
-          <!--modal block-->
-          <div id="photo{{photo.id}}" class="modal">
-            <div class="modal-content">
-              <div class="modal-image">
-                <div class="modal-hashtags" >
-                  <div class="chip" ng-repeat="hashtag in photo.hashtags">
-                    #{{hashtag.tag}}
-                  </div>
+        <div id="avatar-modal" class="modal">
+          <div class="modal-content">
+            <div class="gallery" >
+              <div ng-repeat="photo in user.photos" class="gallery-image-container">
+                <div class="gallery-image">
+                  <img ng-src="{{photo.url}}" class="avatar-variant" ng-click="setAvatar(photo);"/>
                 </div>
-                <img ng-src="{{photo.url}}"/>
-              </div>
-              <div class="modal-comments">
-                <p ng-repeat="comment in photo.comments">{{comment.user_id}} : {{comment.text}}</p>
-                <div class="comment-form">
-                  <form name="commentForm" ng-controller="CommentsCtrl">
-                    <input type="text" name="commentText" ng-model="commentText">
-                    <button class="btn" ng-click="sendToCommentsChannel(commentText)">Send</button>
-                  </form>
-                </div>
-                <div after-render="setup"/>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
+        <div class="profile-info">
+          <p>
+            <strong>Birth:</strong>
+            <span ng-bind="user.birth | date:'dd.MM.yyyy'"></span>
+          </p>
+
+          <p>
+            <strong>Weight:</strong>
+            <span ng-bind="user.weight"></span> kg
+          </p>
+
+          <p>
+            <strong>Height:</strong>
+            <span ng-bind="user.height"></span> cm
+          </p>
+
+          <p>
+            <strong>Sex:</strong>
+            <span ng-bind="user.sex"></span>
+          </p>
+        </div>
+      </div>
+      <div id="portfoliotab" class="col s12">
+        <div>
+          <button class="btn" ng-click="editPriorities();" ng-show="isDragDisabled">Edit priorities</button>
+          <button class="btn" ng-click="applyPriorities();" ng-hide="isDragDisabled">Apply</button>
+          <button class="btn" ng-click="discardPriorities();" ng-hide="isDragDisabled">Discard</button>
+        </div>
+        <div class="gallery-container">
+          <div id="gallery-dropzone" style="display: none;">
+            <form id="dropform" action="/upload" class="dropzone">
+              <input type="hidden" name="user_id" ng-value="user.id"/>
+            </form>
+          </div>
+          <div class="gallery">
+            <ul as-sortable="dragControlListeners" ng-model="user.photos" is-disabled="isDragDisabled">
+              <li ng-repeat="photo in user.photos" as-sortable-item>
+                <div class="gallery-image-container" as-sortable-item-handle>
+                  <!--onpage image-->
+                  <div class="gallery-image">
+                    <p ng-hide="isDragDisabled">Priority: {{photo.priority}}</p>
+                    <a href="#photo{{photo.id}}" class="modal-trigger"><img ng-src="{{photo.url}}"/></a>
+                  </div>
+                  <!--modal block-->
+                  <div id="photo{{photo.id}}" class="modal">
+                    <div class="modal-content">
+                      <div class="modal-image">
+                        <div class="modal-hashtags" >
+                          <div class="chip" ng-repeat="hashtag in photo.hashtags">
+                            #{{hashtag.tag}}
+                          </div>
+                        </div>
+                        <img ng-src="{{photo.url}}"/>
+                      </div>
+                      <div class="modal-comments">
+                        <p ng-repeat="comment in photo.comments">{{comment.user_id}} : {{comment.text}}</p>
+                        <div class="comment-form">
+                          <form name="commentForm" ng-controller="CommentsCtrl">
+                            <input type="text" name="commentText" ng-model="commentText">
+                            <button class="btn" ng-click="sendToCommentsChannel(commentText)">Send</button>
+                            <div after-render="setup"/>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
+
+
+
   </div>
 
 

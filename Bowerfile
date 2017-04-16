@@ -1,4 +1,5 @@
 asset 'angular'
 asset 'angular-material'
 asset 'angular-actioncable'
+asset 'ng-sortable'
 # vim: ft=ruby

@@ -37,12 +37,22 @@ class PhotosController < ApplicationController
   end
 
   def update
-    #edit tags(?)
+  end
+
+  def update_priorities
+    Photo.transaction do
+      params.require(:photos).each do |photo|
+        @photo = Photo.find(photo[:id])
+        @photo.priority = photo[:priority]
+        @photo.save
+      end
+    end
+    render json: {}, status: 200
   end
 
   private
 
   def set_photos
-    @photos = Photo.where(user_id: params[:user_id])
+    @photos = Photo.where(user_id: params[:user_id]).order(:priority)
   end
 end

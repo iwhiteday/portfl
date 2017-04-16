@@ -3,6 +3,9 @@ Rails.application.routes.draw do
   resources :users do
     resources :photos do
       resources :comments
+      collection do
+        patch :update_priorities
+      end
     end
   end
 

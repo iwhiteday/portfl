@@ -1,4 +1,6 @@
 app.controller('UsersIndexCtrl', function($scope, $http){
+
+
     $http.get(Routes.users_path({format: "json"})).
         then(function (response) {
             $scope.users = response.data;
@@ -17,44 +19,145 @@ app.controller('UsersIndexCtrl', function($scope, $http){
 });
 
 
-app.controller('UserCtrl', function($scope, $http, ActionCableChannel){
+app.controller('UserCtrl', function($scope, $http) {
     var location = document.location.pathname;
     var params = parse_url(location);
-    $http.get(Routes.user_path(params.users, {format: "json"})).
-    then(function (response) {
+    $scope.isDragDisabled = true;
+
+    $http.get(Routes.user_path(params.users, {format: "json"})).then(function (response) {
         $scope.user = response.data;
         $scope.action = $scope.user.id ? 'PATCH' : 'POST';
-        $scope.$broadcast('dataload');
     });
 
-    $scope.submit = function(form) {
+    $scope.editAvatar = function () {
+        $('#avatar-modal').modal('open');
+    };
+
+    $scope.setAvatar = function (newAvatar) {
+        $scope.user.avatar_id = newAvatar.id;
+
+        $http({
+            method: 'PATCH',
+            url: Routes.user_path($scope.user.id),
+            data: {'user': $scope.user}
+        })
+            .then(function (data) {
+                Materialize.toast('Status' + data.status, 1000);
+                $scope.user.avatar = newAvatar;
+                $('#avatar-modal').modal('close');
+            }, function (data) {
+                Materialize.toast(data.status, 1000);
+            });
+    };
+
+    $scope.submit = function (form) {
         $scope.$submitted = true;
 
-        if(form.$invalid) {
-            Materialize.toast('Form is invalid' , 1000);
+        if (form.$invalid) {
+            Materialize.toast('Form is invalid', 1000);
             return;
         }
 
         $http({
-            method : $scope.action,
-            url : Routes.user_path($scope.user.id ? $scope.user.id : ''),
-            data : $scope.user
+            method: $scope.action,
+            url: Routes.user_path($scope.user.id ? $scope.user.id : ''),
+            data: $scope.user
         })
             .then(function (data) {
                 Materialize.toast('Status' + data.status, 1000);
-            }, function(data){
+            }, function (data) {
                 Materialize.toast(data.status, 1000);
             });
     };
 
     $scope.setup = function () {
-        if(!$scope.ready) {
+        if (!$scope.isReady) {
             $('.modal').modal();
+            sortPhotosByPriority($scope.user.photos);
 
-            $scope.ready = true;
+            $scope.isReady = true;
         }
     };
+
+    $scope.editPriorities = function() {
+        sortPhotosByPriority($scope.user.photos);
+        $scope.isDragDisabled = false;
+    };
+    $scope.applyPriorities = function() {
+        $http({
+            method: 'PATCH',
+            url: Routes.update_priorities_user_photos_path($scope.user.id),
+            data: {photos: $scope.user.photos}
+        })
+            .then(function (data) {
+                Materialize.toast('Status' + data.status, 1000);
+            }, function (data) {
+                Materialize.toast(data.status, 1000);
+            });
+
+        $scope.isDragDisabled = true;
+    };
+
+    $scope.discardPriorities = function() {
+        $scope.isDragDisabled = true;
+    };
+
+    $scope.dragControlListeners = {
+        orderChanged: function(event) {
+            for(var i = 0; i < $scope.user.photos.length; i++){
+                $scope.user.photos[i].priority = i;
+            }
+            //sortPhotosByPriority($scope.user.photos);
+        }
+    };
+
 });
+//.directive('dropzone', function() {
+//    return {
+//        restrict: 'C',
+//        link: function(scope, element, attrs) {
+//
+//            var config = {
+//                url: 'http://localhost:3000/upload',
+//                maxFilesize: 100,
+//                paramName: "file",
+//                maxThumbnailFilesize: 10,
+//                parallelUploads: 1,
+//                autoProcessQueue: false
+//            };
+//
+//            var eventHandlers = {
+//                'addedfile': function(file) {
+//                    scope.file = file;
+//                    if (this.files[1]!=null) {
+//                        this.removeFile(this.files[0]);
+//                    }
+//                    scope.$apply(function() {
+//                        scope.fileAdded = true;
+//                    });
+//                },
+//
+//                'success': function (file, response) {
+//                }
+//
+//            };
+//
+//            dropzone = new Dropzone(element[0], config);
+//
+//            angular.forEach(eventHandlers, function(handler, event) {
+//                dropzone.on(event, handler);
+//            });
+//
+//            scope.processDropzone = function() {
+//                dropzone.processQueue();
+//            };
+//
+//            scope.resetDropzone = function() {
+//                dropzone.removeAllFiles();
+//            }
+//        }
+//    }
+//});
 
 app.directive('afterRender', ['$timeout', function ($timeout) {
     return {
@@ -66,3 +169,10 @@ app.directive('afterRender', ['$timeout', function ($timeout) {
         }
     };
 }]);
+
+function sortPhotosByPriority(photos) {
+    photos.sort(function(a,b){
+        return a.priority - b.priority;
+    });
+}
+

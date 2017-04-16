@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170412123218) do
+ActiveRecord::Schema.define(version: 20170416130558) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "email"
@@ -45,6 +45,8 @@ ActiveRecord::Schema.define(version: 20170412123218) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.string   "public_id",  limit: 100
+    t.integer  "rating"
+    t.integer  "priority"
     t.index ["public_id"], name: "public_id_UNIQUE", unique: true, using: :btree
   end
 

@@ -41,18 +41,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # POST /users
-  # POST /users.json
-  def create
-    @user = User.new(user_params)
-
-    if @user.save
-      render json: { user: @user.to_json, msg: 'User successfully created', redirect_to: 'user_path' }
-    else
-      render json: { errors: @user.errors, msg: @user.errors.full_messages.join(', ')}, status: 422
-    end
-  end
-
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
