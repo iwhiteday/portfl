@@ -19,16 +19,7 @@
             <li><%= button_to('Logout', current_account, :method => :delete) %> </li>
           <% else %>
             <li>
-              <%= link_to 'Sign up with Facebook', account_facebook_omniauth_authorize_path %>
-            </li>
-            <li>
-              <%= link_to 'Sign up with Twitter', account_twitter_omniauth_authorize_path %>
-            </li>
-            <li>
-              <%= link_to 'Sign up with Vkontakte', account_vkontakte_omniauth_authorize_path %>
-            </li>
-            <li>
-              <%= link_to 'Sign up', new_account_path %>
+              <%= link_to 'Sign up', new_session_path %>
             </li>
           <% end %>
         </ul>

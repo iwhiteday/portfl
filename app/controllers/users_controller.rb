@@ -44,8 +44,11 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
+    @user.preferences = []
+    params[:user][:preferences].each do |pref|
+      @user.preferences << Preference.find(pref[:id])
+    end
     if @user.update(user_params)
-
       render json: { user: @user.to_json, msg: 'User successfully updated', redirect_to: 'user_path' }
     else
       render json: { errors: @user.errors, msg: @user.errors.full_messages.join(', ')}, status: 422
@@ -67,6 +70,6 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:name, :avatar_id, :birth, :weight, :height, :sex)
+      params.require(:user).permit(:name, :avatar_id, :birth, :weight, :height, :sex, :preferences)
     end
 end

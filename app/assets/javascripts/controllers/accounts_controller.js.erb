@@ -1,11 +1,15 @@
 app.controller('AccountCtrl', function($scope, $http, $window){
     var location = document.location.pathname;
     var params = parse_url(location);
-    $http.get(Routes.account_path(params.accounts, {format: "json"})).
-    then(function (response) {
-        $scope.account = response.data;
-        $scope.action = $scope.account.id ? 'PATCH' : 'POST';
-    });
+
+    if(params.account) {
+        $http.get(Routes.account_path(params.accounts, {format: "json"})).
+        then(function (response) {
+            $scope.account = response.data;
+            $scope.action = $scope.account.id ? 'PATCH' : 'POST';
+        });
+    }
+
 
     $scope.submit = function(form) {
         $scope.$submitted = true;
@@ -15,7 +19,6 @@ app.controller('AccountCtrl', function($scope, $http, $window){
             return;
         }
 
-        console.log($scope.account);
         $http({
             method : $scope.action,
             url : Routes.account_path($scope.account.id ? $scope.account.id : ''),
@@ -23,11 +26,31 @@ app.controller('AccountCtrl', function($scope, $http, $window){
         })
             .then(function (response) {
                 Materialize.toast('Status' + response.status, 1000);
-                console.log();
-                $window.location.href = Routes.edit_user_path(response.data.redirect_to.id);
+                $window.location.href = Routes.edit_user_path($scope.account.user_id);
             }, function(data){
                 Materialize.toast(data.status, 1000);
             });
     };
+
+    $scope.login = function(form) {
+        $scope.$submitted = true;
+
+        if(form.$invalid) {
+            Materialize.toast('Form is invalid' , 1000);
+            return;
+        }
+
+        $http({
+            method : 'POST',
+            url : Routes.sessions_path(),
+            data : {'account': $scope.account}
+        })
+            .then(function (response) {
+                Materialize.toast('Status' + response.status, 1000);
+                $window.location.href = '/';
+            }, function(data){
+                Materialize.toast(data.status, 1000);
+            });
+    }
 
 });

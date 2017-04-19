@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170416130558) do
+ActiveRecord::Schema.define(version: 20170419145140) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "email"
@@ -45,9 +45,24 @@ ActiveRecord::Schema.define(version: 20170416130558) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.string   "public_id",  limit: 100
-    t.integer  "rating"
+    t.float  "rating"
     t.integer  "priority"
     t.index ["public_id"], name: "public_id_UNIQUE", unique: true, using: :btree
+  end
+
+  create_table "preferences", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string "value"
+  end
+
+  create_table "preferences_users", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "user_id",       null: false
+    t.integer "preference_id", null: false
+  end
+
+  create_table "rates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "value"
+    t.integer "photo_id"
+    t.integer "user_id"
   end
 
   create_table "roles", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

@@ -50,6 +50,11 @@
             <strong>Sex:</strong>
             <span ng-bind="user.sex"></span>
           </p>
+
+          <p>
+            <strong>Preferences:</strong>
+            <span ng-repeat="preference in user.preferences"> {{preference.value}} </span>
+          </p>
         </div>
       </div>
       <div id="portfoliotab" class="col s12">
@@ -66,8 +71,8 @@
           </div>
           <div class="gallery">
             <ul as-sortable="dragControlListeners" ng-model="user.photos" is-disabled="isDragDisabled">
-              <li ng-repeat="photo in user.photos" as-sortable-item>
-                <div class="gallery-image-container" as-sortable-item-handle>
+              <li ng-repeat="photo in user.photos" as-sortable-item class="gallery-image-container">
+                <div as-sortable-item-handle>
                   <!--onpage image-->
                   <div class="gallery-image">
                     <p ng-hide="isDragDisabled">Priority: {{photo.priority}}</p>
@@ -81,6 +86,14 @@
                           <div class="chip" ng-repeat="hashtag in photo.hashtags">
                             #{{hashtag.tag}}
                           </div>
+                        </div>
+                        <div class="modal-rating" >
+                          <button class="btn-rating" ng-click="rate(photo, 1);">1</button>
+                          <button class="btn-rating" ng-click="rate(photo, 2);">2</button>
+                          <button class="btn-rating" ng-click="rate(photo, 3);">3</button>
+                          <button class="btn-rating" ng-click="rate(photo, 4);">4</button>
+                          <button class="btn-rating" ng-click="rate(photo, 5);">5</button>
+                          <span>Rating: {{photo.rating}}</span>
                         </div>
                         <img ng-src="{{photo.url}}"/>
                       </div>

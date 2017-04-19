@@ -4,6 +4,7 @@
     "angular": "latest",
     "angular-material": "latest",
     "angular-actioncable": "latest",
-    "angular-ui-sortable": "latest"
+    "angular-devise": "latest",
+    "ng-sortable": "latest"
   }
 }

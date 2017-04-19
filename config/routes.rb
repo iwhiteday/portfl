@@ -1,8 +1,11 @@
 Rails.application.routes.draw do
 
+  resources :sessions
+
   resources :users do
     resources :photos do
       resources :comments
+      resources :rates
       collection do
         patch :update_priorities
       end

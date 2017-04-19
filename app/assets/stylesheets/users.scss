@@ -100,11 +100,18 @@
   left: 40px;
 }
 
+.modal-rating {
+  position: absolute;
+  top: 100px;
+  left: 40px;
+}
+
 .gallery-image-container {
   width: 24%;
   height: 200px;
   padding: 10px 0 10px 10px;
   overflow: hidden;
+  float: left;
 }
 
 #avatar {

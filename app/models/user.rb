@@ -5,6 +5,8 @@ class User < ApplicationRecord
   belongs_to :role
   has_many :photos, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :rates
+  has_and_belongs_to_many :preferences
   has_one :account, dependent: :destroy
 
   after_initialize :set_defaults
@@ -16,7 +18,7 @@ class User < ApplicationRecord
 
   def as_json(options={})
     Rails.cache.fetch(cache_key) do
-      super({include: [:role, :avatar, :photos => {include: [:hashtags, :comments]}], methods: :sex})
+      super({include: [:role, :avatar, :preferences, :photos => {include: [:hashtags, :comments]}], methods: :sex})
     end
   end
 

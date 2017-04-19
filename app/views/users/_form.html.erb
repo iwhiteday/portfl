@@ -30,6 +30,18 @@
         </select>
       </div>
 
+      <div class="field">
+        <label>Preferences:</label>
+        <div>
+          <% preferences_list.each do |preference|  %>
+              <p>
+                <input type="checkbox" name="<%= preference.value %>" id="<%= preference.value %>" value="<%= preference.id %>" ng-checked="checkPreference('<%= preference.id %>');">
+                <%= label_tag(preference.value, preference.value) %>
+              </p>
+          <% end %>
+        </div>
+      </div>
+
 
 
       <div class="actions">

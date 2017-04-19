@@ -36,11 +36,12 @@ class AccountsController < ApplicationController
   end
 
   def update
-    current_account.password = account_params.password
+    current_account.email ||= account_params[:email]
+    current_account.password = account_params[:password]
     if current_account.save
-      redirect_to current_account.user
+      render json: {}, status: 200
     else
-      render edit
+      render json: {}, status: 500
     end
   end
 

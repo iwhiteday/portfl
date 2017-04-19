@@ -19,15 +19,16 @@ app.controller('UsersIndexCtrl', function($scope, $http){
 });
 
 
-app.controller('UserCtrl', function($scope, $http) {
+app.controller('UserCtrl', function($scope, $http, $q) {
     var location = document.location.pathname;
     var params = parse_url(location);
     $scope.isDragDisabled = true;
 
-    $http.get(Routes.user_path(params.users, {format: "json"})).then(function (response) {
-        $scope.user = response.data;
-        $scope.action = $scope.user.id ? 'PATCH' : 'POST';
-    });
+    $http.get(Routes.user_path(params.users, {format: "json"}))
+        .then(function (response) {
+            $scope.user = response.data;
+            $scope.action = $scope.user.id ? 'PATCH' : 'POST';
+        });
 
     $scope.editAvatar = function () {
         $('#avatar-modal').modal('open');
@@ -58,10 +59,15 @@ app.controller('UserCtrl', function($scope, $http) {
             return;
         }
 
+        $scope.user.preferences = [];
+        $('input[type="checkbox"]:checked').each(function () {
+            $scope.user.preferences.push({id: $(this).val(), value: $(this).attr('id')});
+        });
+
         $http({
             method: $scope.action,
             url: Routes.user_path($scope.user.id ? $scope.user.id : ''),
-            data: $scope.user
+            data: {user: $scope.user}
         })
             .then(function (data) {
                 Materialize.toast('Status' + data.status, 1000);
@@ -79,10 +85,25 @@ app.controller('UserCtrl', function($scope, $http) {
         }
     };
 
+    $scope.rate = function(photo, rating) {
+        $('.btn-rating').prop('disabled', true);
+        $http({
+            method: 'POST',
+            url: Routes.user_photo_rates_path($scope.user.id, photo.id),
+            data: {rate: {value: rating}}
+        })
+            .then(function (data) {
+                Materialize.toast('Status' + data.status, 1000);
+            }, function (data) {
+                Materialize.toast(data.status, 1000);
+            });
+    };
+
     $scope.editPriorities = function() {
         sortPhotosByPriority($scope.user.photos);
         $scope.isDragDisabled = false;
     };
+
     $scope.applyPriorities = function() {
         $http({
             method: 'PATCH',
@@ -103,61 +124,24 @@ app.controller('UserCtrl', function($scope, $http) {
     };
 
     $scope.dragControlListeners = {
-        orderChanged: function(event) {
+        orderChanged: function() {
             for(var i = 0; i < $scope.user.photos.length; i++){
                 $scope.user.photos[i].priority = i;
             }
-            //sortPhotosByPriority($scope.user.photos);
         }
     };
 
+    $scope.checkPreference = function(id) {
+        id = id - 0;
+        for(i in $scope.user.preferences) {
+            var preference = $scope.user.preferences[i];
+            if (preference.id == id) {
+                return true;
+            }
+        }
+        return false;
+    }
 });
-//.directive('dropzone', function() {
-//    return {
-//        restrict: 'C',
-//        link: function(scope, element, attrs) {
-//
-//            var config = {
-//                url: 'http://localhost:3000/upload',
-//                maxFilesize: 100,
-//                paramName: "file",
-//                maxThumbnailFilesize: 10,
-//                parallelUploads: 1,
-//                autoProcessQueue: false
-//            };
-//
-//            var eventHandlers = {
-//                'addedfile': function(file) {
-//                    scope.file = file;
-//                    if (this.files[1]!=null) {
-//                        this.removeFile(this.files[0]);
-//                    }
-//                    scope.$apply(function() {
-//                        scope.fileAdded = true;
-//                    });
-//                },
-//
-//                'success': function (file, response) {
-//                }
-//
-//            };
-//
-//            dropzone = new Dropzone(element[0], config);
-//
-//            angular.forEach(eventHandlers, function(handler, event) {
-//                dropzone.on(event, handler);
-//            });
-//
-//            scope.processDropzone = function() {
-//                dropzone.processQueue();
-//            };
-//
-//            scope.resetDropzone = function() {
-//                dropzone.removeAllFiles();
-//            }
-//        }
-//    }
-//});
 
 app.directive('afterRender', ['$timeout', function ($timeout) {
     return {

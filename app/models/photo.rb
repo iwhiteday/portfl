@@ -1,6 +1,7 @@
 class Photo < ApplicationRecord
   belongs_to :user
   has_many :comments, dependent: :destroy
+  has_many :rates, dependent: :destroy
   has_and_belongs_to_many :hashtags
 
   before_save :set_priority
@@ -9,6 +10,10 @@ class Photo < ApplicationRecord
 
   def clear_cache
     user.clear_cache
+  end
+
+  def update_rating
+    self.rating = rates.sum(:value).to_f / rates.length.to_f
   end
 
   private
