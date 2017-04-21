@@ -14,6 +14,7 @@ class AccountsController < ApplicationController
     @account.user = User.new
 
     if @account.save
+      sign_in @account
       render json: { account: @account.to_json, msg: 'Account successfully created', redirect_to: @account.user }
     else
       render json: { errors: @account.errors, msg: @account.errors.full_messages.join(', ')}, status: 422

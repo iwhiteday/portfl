@@ -2,13 +2,15 @@
 //= require angular
 //= require angular-websocket
 //= require angular-actioncable
+//= require slick-carousel
+//= require angular-slick
 //= require ng-sortable
 //= require materialize
 //= require js-routes
 //= require_self
 //= require_tree ./controllers
 
-var app = angular.module("app", ['ngActionCable', 'as.sortable'])
+var app = angular.module("app", ['ngActionCable', 'as.sortable', 'slick'])
     .run(function (ActionCableConfig){
         ActionCableConfig.debug = false;
     });

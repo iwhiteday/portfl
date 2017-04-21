@@ -2,7 +2,7 @@ app.controller('AccountCtrl', function($scope, $http, $window){
     var location = document.location.pathname;
     var params = parse_url(location);
 
-    if(params.account) {
+    if(params.accounts) {
         $http.get(Routes.account_path(params.accounts, {format: "json"})).
         then(function (response) {
             $scope.account = response.data;
@@ -22,13 +22,14 @@ app.controller('AccountCtrl', function($scope, $http, $window){
         $http({
             method : $scope.action,
             url : Routes.account_path($scope.account.id ? $scope.account.id : ''),
-            data : {'account': $scope.account}
+            data : { account: $scope.account }
         })
             .then(function (response) {
                 Materialize.toast('Status' + response.status, 1000);
-                $window.location.href = Routes.edit_user_path($scope.account.user_id);
+                $window.location.href = Routes.edit_user_path(response.data.redirect_to.id);
             }, function(data){
                 Materialize.toast(data.status, 1000);
+                console.log(data);
             });
     };
 

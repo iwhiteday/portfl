@@ -1,0 +1,16 @@
+<div>
+  <button class="btn" ng-click="editPriorities();" ng-show="isDragDisabled">Edit priorities</button>
+  <button class="btn" ng-click="applyPriorities();" ng-hide="isDragDisabled">Apply</button>
+  <button class="btn" ng-click="discardPriorities();" ng-hide="isDragDisabled">Discard</button>
+</div>
+<ul as-sortable="dragControlListeners" ng-model="user.photos" is-disabled="isDragDisabled">
+  <li ng-repeat="photo in user.photos" as-sortable-item class="gallery-image-container">
+    <div as-sortable-item-handle>
+      <!--onpage image-->
+      <div class="gallery-image">
+        <p ng-hide="isDragDisabled">Priority: {{photo.priority}}</p>
+        <a href="#photo{{photo.id}}" class="modal-trigger"><img ng-src="{{photo.url}}"/></a>
+      </div>
+    </div>
+  </li>
+</ul>

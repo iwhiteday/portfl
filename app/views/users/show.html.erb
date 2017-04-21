@@ -58,67 +58,71 @@
         </div>
       </div>
       <div id="portfoliotab" class="col s12">
-        <div>
-          <button class="btn" ng-click="editPriorities();" ng-show="isDragDisabled">Edit priorities</button>
-          <button class="btn" ng-click="applyPriorities();" ng-hide="isDragDisabled">Apply</button>
-          <button class="btn" ng-click="discardPriorities();" ng-hide="isDragDisabled">Discard</button>
-        </div>
         <div class="gallery-container">
-          <div id="gallery-dropzone" style="display: none;">
+          <div id="gallery-dropzone">
             <form id="dropform" action="/upload" class="dropzone">
               <input type="hidden" name="user_id" ng-value="user.id"/>
             </form>
           </div>
+          <div class="view-select">
+            <p>
+              <button ng-click="show('table');">Table</button>
+              <button ng-click="show('tiles');">Tiles</button>
+              <button ng-click="show('slideshow');">Slideshow</button>
+            </p>
+          </div>
           <div class="gallery">
-            <ul as-sortable="dragControlListeners" ng-model="user.photos" is-disabled="isDragDisabled">
-              <li ng-repeat="photo in user.photos" as-sortable-item class="gallery-image-container">
-                <div as-sortable-item-handle>
-                  <!--onpage image-->
-                  <div class="gallery-image">
-                    <p ng-hide="isDragDisabled">Priority: {{photo.priority}}</p>
-                    <a href="#photo{{photo.id}}" class="modal-trigger"><img ng-src="{{photo.url}}"/></a>
-                  </div>
-                  <!--modal block-->
-                  <div id="photo{{photo.id}}" class="modal">
-                    <div class="modal-content">
-                      <div class="modal-image">
-                        <div class="modal-hashtags" >
-                          <div class="chip" ng-repeat="hashtag in photo.hashtags">
-                            #{{hashtag.tag}}
-                          </div>
-                        </div>
-                        <div class="modal-rating" >
-                          <button class="btn-rating" ng-click="rate(photo, 1);">1</button>
-                          <button class="btn-rating" ng-click="rate(photo, 2);">2</button>
-                          <button class="btn-rating" ng-click="rate(photo, 3);">3</button>
-                          <button class="btn-rating" ng-click="rate(photo, 4);">4</button>
-                          <button class="btn-rating" ng-click="rate(photo, 5);">5</button>
-                          <span>Rating: {{photo.rating}}</span>
-                        </div>
-                        <img ng-src="{{photo.url}}"/>
+            <div class="slideshow" ng-show="partial == 'slideshow'">
+              <%= render 'slideshow' %>
+            </div>
+            <div class="table" ng-show="partial == 'table'">
+              <%= render 'table' %>
+            </div>
+            <div class="tiles" ng-show="partial == 'tiles'">
+              <%= render 'tiles' %>
+            </div>
+            <!--modals block-->
+            <div ng-repeat="photo in user.photos" id="photo{{photo.id}}" class="modal">
+              <div class="modal-content">
+                <div class="modal-image">
+                  <div class="modal-toolbar">
+                    <div class="modal-hashtags" >
+                      <div class="chip" ng-repeat="hashtag in photo.hashtags">
+                        #{{hashtag.tag}}
                       </div>
-                      <div class="modal-comments">
-                        <p ng-repeat="comment in photo.comments">{{comment.user_id}} : {{comment.text}}</p>
-                        <div class="comment-form">
-                          <form name="commentForm" ng-controller="CommentsCtrl">
-                            <input type="text" name="commentText" ng-model="commentText">
-                            <button class="btn" ng-click="sendToCommentsChannel(commentText)">Send</button>
-                            <div after-render="setup"/>
-                          </form>
-                        </div>
+                      <div id="{{photo.id}}" class="chips chips-autocomplete">
                       </div>
                     </div>
+                    <div class="modal-rating" >
+                      Rating: {{photo.rating}}
+                      <button class="btn-rating" ng-click="rate(photo, 1);">1</button>
+                      <button class="btn-rating" ng-click="rate(photo, 2);">2</button>
+                      <button class="btn-rating" ng-click="rate(photo, 3);">3</button>
+                      <button class="btn-rating" ng-click="rate(photo, 4);">4</button>
+                      <button class="btn-rating" ng-click="rate(photo, 5);">5</button>
+                    </div>
+                    <div class="modal-photo-controls">
+                      <button class="btn">Edit hashtags</button>
+                      <button class="btn">Delete</button>
+                    </div>
+                  </div>
+                  <img ng-src="{{photo.url}}"/>
+                </div>
+                <div class="modal-comments">
+                  <p ng-repeat="comment in photo.comments">{{comment.user_id}} : {{comment.text}}</p>
+                  <div class="comment-form">
+                    <form name="commentForm" ng-controller="CommentsCtrl">
+                      <input type="text" name="commentText" ng-model="commentText">
+                      <button class="btn" ng-click="sendToCommentsChannel(commentText)" after-render="setup">Send</button>
+                    </form>
                   </div>
                 </div>
-              </li>
-            </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
-
-
   </div>
 
 
@@ -126,6 +130,7 @@
   <%= link_to 'Back', users_path %>
 
   <script src="<%= asset_path 'dropzone.js' %>"></script>
-  <!--<script src="<%= asset_path 'dropzone_setup.js.erb' %>"></script>-->
+  <script src="<%= asset_path 'algorithmia-0.2.0.js' %>"></script>
+  <script src="<%= asset_path 'dropzone_setup.js.erb' %>"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </div>

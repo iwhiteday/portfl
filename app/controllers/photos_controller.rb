@@ -20,11 +20,22 @@ class PhotosController < ApplicationController
     @photo.user_id = params[:user_id]
     @photo.url = response['url']
     @photo.public_id = response['public_id']
-    if @photo.save
-      render json: {response: @photo}, status: 200
+    resp = Unirest.get "https://sightengine-nudity-and-adult-content-detection.p.mashape.com/nudity.json?url=#{@photo.url}",
+                           headers:{
+                               "X-Mashape-Key" => "JDD65uYWJ3mshZ8AzHlsyJCi909Lp1E1jKLjsn9WeFFjh8MEf1",
+                               "Accept" => "application/json"
+                           }
+    if resp.body['nudity']['safe'] > 0.3
+      if @photo.save
+        render json: {response: @photo}, status: 200
+      else
+        render json: {msg: @photo.errors.full_messages.join(', ') }, status: 500
+      end
     else
-      render status: 500
+      @photo.delete_photo_from_hosting
+      render json: {msg: 'Nudity detected'}, status: 500
     end
+
   end
 
   def destroy

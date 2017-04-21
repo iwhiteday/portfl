@@ -1,0 +1,26 @@
+<table>
+  <thead>
+    <tr>
+      <td><button ng-click="sortPhotosByPriority();">Priority</button></td>
+      <td>Photo</td>
+      <td>Posted</td>
+      <td><button ng-click="sortPhotosByRating();">Rating</button></td>
+      <td>Last comment</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="photo in user.photos">
+      <td>{{photo.priority}}</td>
+      <td class="photo-cell">
+        <!--onpage image-->
+        <div class="gallery-image">
+          <p ng-hide="isDragDisabled">Priority: {{photo.priority}}</p>
+          <a href="#photo{{photo.id}}" class="modal-trigger"><img ng-src="{{photo.url}}"/></a>
+        </div>
+      </td>
+      <td>{{photo.created_at}}</td>
+      <td>{{photo.rating}}</td>
+      <td>{{photo.comments[photo.comments.length - 1].text}}</td>
+    </tr>
+  </tbody>
+</table>

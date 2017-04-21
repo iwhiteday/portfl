@@ -1,7 +1,5 @@
 app.controller('CommentsCtrl', function($scope, $http, ActionCableChannel){
-
     $scope.comment = {};
-
 
     var consumer = new ActionCableChannel("CommentsChannel", {'modal_id': $scope.photo.id});
     var callback = function(comment){

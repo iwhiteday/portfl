@@ -2,6 +2,7 @@
 // They will automatically be included in application.scss.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 @import "ng-sortable/dist/ng-sortable.min";
+@import "slick-carousel/slick/slick.css";
 
 .edit-form {
   width: 60%;
@@ -66,12 +67,12 @@
   height: 80% !important;
   max-height: 80% !important;
   width: 80% !important;
+  overflow: visible !important;
 }
 
 .modal-content {
   display: flex;
   height: 100%;
-  overflow: hidden;
 }
 
 .modal-image {
@@ -94,16 +95,26 @@
   flex-basis: 450px;
 }
 
-.modal-hashtags {
-  position: absolute;
-  top: 40px;
-  left: 40px;
+.modal-toolbar {
+  position: fixed;
+  bottom: -75px;
+  left: 140px;
+  background-color: #1de9b6;
+  padding: 10px 20px;
+  width: 70%;
 }
 
-.modal-rating {
-  position: absolute;
-  top: 100px;
-  left: 40px;
+.modal-toolbar > div {
+  margin: 10px;
+}
+
+.btn-rating {
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  width: 30px;
+  height: 30px;
+  border: none;
 }
 
 .gallery-image-container {
@@ -120,4 +131,30 @@
 
 .avatar-variant {
   cursor: pointer;
+}
+
+.photo-cell {
+  width: 25%;
+}
+
+.row {
+  width: 100%;
+}
+
+.carousel.carousel-slider {
+  height: 600px !important;
+}
+
+.slideshow {
+  width: 100%;
+
+}
+
+slick {
+  width: 100%;
+}
+
+.slick-slide img {
+  margin: auto;
+  height: 500px;
 }

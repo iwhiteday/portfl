@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     resources :photos do
       resources :comments
       resources :rates
+      resources :hashtags
       collection do
         patch :update_priorities
       end

@@ -16,15 +16,15 @@ class Photo < ApplicationRecord
     self.rating = rates.sum(:value).to_f / rates.length.to_f
   end
 
-  private
-
-  def set_priority
-    self.priority ||= user.photos.length
-  end
-
   def delete_photo_from_hosting
     unless public_id.empty?
       Cloudinary::Uploader.destroy(public_id)
     end
+  end
+
+  private
+
+  def set_priority
+    self.priority ||= user.photos.length
   end
 end

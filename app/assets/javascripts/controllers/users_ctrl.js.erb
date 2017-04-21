@@ -23,6 +23,7 @@ app.controller('UserCtrl', function($scope, $http, $q) {
     var location = document.location.pathname;
     var params = parse_url(location);
     $scope.isDragDisabled = true;
+    $scope.partial = 'slideshow';
 
     $http.get(Routes.user_path(params.users, {format: "json"}))
         .then(function (response) {
@@ -79,11 +80,64 @@ app.controller('UserCtrl', function($scope, $http, $q) {
     $scope.setup = function () {
         if (!$scope.isReady) {
             $('.modal').modal();
-            sortPhotosByPriority($scope.user.photos);
+            $scope.sortPhotosByPriority();
+
+            var dropzone = new Dropzone('#dropform');
+            dropzone.on("success", function (file, response) {
+                $scope.user.photos.push(response.response);
+            });
+
+            dropzone.on("error", function (file, errorMessage) {
+                Materialize.toast(errorMessage.msg, 3000);
+            });
+
+
+            $http({
+                method: 'GET',
+                url: Routes.user_photo_hashtags_path(1, 1)
+            })
+                .then(function (data) {
+                    var chipsAutocompleteData = {};
+                    var chipsData = [];
+
+                    data.data.forEach(function(item, i, arr){
+                        chipsAutocompleteData[item.tag] = null; //setup for materialize chips autocomplete
+                    });
+
+                    $('.chip').each(function (index, element) {
+                        chipsData.push({tag: $(this).text()});
+                    });
+
+                    $('.chips-autocomplete').material_chip({
+                        data: chipsData,
+                        autocompleteOptions: {
+                            data: chipsAutocompleteData,
+                            limit: 50,
+                            minLength: 1
+                        }
+                    });
+                    $('.chips-autocomplete').on('chip.add', function (e, chip) {
+                        $http({
+                            method: 'POST',
+                            url: Routes.user_photo_hashtags_path($scope.user.id, $(this).attr('id')),
+                            data: {hashtag: {tag: chip.tag}}
+                        })
+                            .then(function (data) {
+                                Materialize.toast('Status' + data.status, 1000);
+                            }, function (data) {
+                                Materialize.toast('Hashtag add error, status: ' + data.status, 1000);
+                            });
+                    });
+                }, function (data) {
+                    Materialize.toast('Hashtags loading error, status: ' + data.status, 1000);
+                });
+
+
 
             $scope.isReady = true;
         }
     };
+
 
     $scope.rate = function(photo, rating) {
         $('.btn-rating').prop('disabled', true);
@@ -99,8 +153,17 @@ app.controller('UserCtrl', function($scope, $http, $q) {
             });
     };
 
+    $scope.show = function(partial_name) {
+        $scope.partial = partial_name;
+        if(partial_name == 'slideshow'){
+            $('slick').slick('unslick');
+            $('slick').slick();
+            $('slick').slick('slickNext');
+        }
+    };
+
     $scope.editPriorities = function() {
-        sortPhotosByPriority($scope.user.photos);
+        $scope.sortPhotosByPriority($scope.user.photos);
         $scope.isDragDisabled = false;
     };
 
@@ -121,6 +184,7 @@ app.controller('UserCtrl', function($scope, $http, $q) {
 
     $scope.discardPriorities = function() {
         $scope.isDragDisabled = true;
+        $scope.sortPhotosByPriority();
     };
 
     $scope.dragControlListeners = {
@@ -140,7 +204,19 @@ app.controller('UserCtrl', function($scope, $http, $q) {
             }
         }
         return false;
-    }
+    };
+
+    $scope.sortPhotosByPriority = function() {
+        $scope.user.photos.sort(function(a,b){
+            return a.priority - b.priority;
+        });
+    };
+
+    $scope.sortPhotosByRating = function() {
+        $scope.user.photos.sort(function(a,b){
+            return b.rating - a.rating;
+        });
+    };
 });
 
 app.directive('afterRender', ['$timeout', function ($timeout) {
@@ -153,10 +229,4 @@ app.directive('afterRender', ['$timeout', function ($timeout) {
         }
     };
 }]);
-
-function sortPhotosByPriority(photos) {
-    photos.sort(function(a,b){
-        return a.priority - b.priority;
-    });
-}
 
