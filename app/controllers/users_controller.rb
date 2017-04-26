@@ -62,6 +62,22 @@ class UsersController < ApplicationController
     render json: {msg: 'User deleted'}
   end
 
+  def search
+    respond_to do |format|
+      format.html
+      format.json {
+        @users = User.search(params[:query])
+        render json: @users
+      }
+    end
+  end
+
+  def filter
+    query = params[:query]
+    @users = User.filter(params[:searchOptions])
+    render json: @users
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user

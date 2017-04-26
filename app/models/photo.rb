@@ -5,7 +5,7 @@ class Photo < ApplicationRecord
   has_and_belongs_to_many :hashtags
 
   before_save :set_priority
-  after_commit :clear_cache
+  after_commit :clear_cache, ThinkingSphinx::RealTime.callback_for(:user, [:user])
   after_destroy :delete_photo_from_hosting
 
   def clear_cache

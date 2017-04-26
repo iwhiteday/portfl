@@ -4,8 +4,8 @@
     "angular": "latest",
     "angular-material": "latest",
     "angular-actioncable": "latest",
-    "ng-sortable": "latest",
-    "slick-carousel": "latest",
-    "angular-slick": "latest"
+    "angular-nouislider": "latest",
+    "materialize": "latest",
+    "ng-sortable": "latest"
   }
 }

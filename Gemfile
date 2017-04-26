@@ -26,6 +26,7 @@ gem 'cloudinary'
 gem 'dalli'
 gem 'bower-rails'
 gem 'js-routes'
+gem 'thinking-sphinx'
 
 gem 'devise'
 

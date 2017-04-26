@@ -11,6 +11,10 @@ Rails.application.routes.draw do
         patch :update_priorities
       end
     end
+    collection do
+      get :search
+      post :filter
+    end
   end
 
   resources :accounts

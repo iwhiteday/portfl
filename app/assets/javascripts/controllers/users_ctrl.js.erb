@@ -23,6 +23,7 @@ app.controller('UserCtrl', function($scope, $http, $q) {
     var location = document.location.pathname;
     var params = parse_url(location);
     $scope.isDragDisabled = true;
+    $scope.hashtagEditMode = false;
     $scope.partial = 'slideshow';
 
     $http.get(Routes.user_path(params.users, {format: "json"}))
@@ -77,9 +78,59 @@ app.controller('UserCtrl', function($scope, $http, $q) {
             });
     };
 
+    $scope.editHashtags = function () {
+        $scope.hashtagEditMode = true;
+    };
+
     $scope.setup = function () {
         if (!$scope.isReady) {
-            $('.modal').modal();
+            $('.modal').modal({
+                ready: function(modal, trigger) {
+                    var id = modal.attr('id').replace('photo', '');
+                    console.log(id);
+                    $http({
+                        method: 'GET',
+                        url: Routes.user_photo_hashtags_path(1, 1)
+                    })
+                        .then(function (data) {
+                            var chipsAutocompleteData = {};
+                            var chipsData = [];
+
+                            data.data.forEach(function(item, i, arr){
+                                chipsAutocompleteData[item.tag] = null; //setup for materialize chips autocomplete
+                            });
+
+                            $('.chip' + id).each(function (index, element) {
+                                chipsData.push({tag: $(this).text()});
+                            });
+
+                            $('.chips-autocomplete').material_chip({
+                                data: chipsData,
+                                autocompleteOptions: {
+                                    data: chipsAutocompleteData,
+                                    limit: 50,
+                                    minLength: 1
+                                }
+                            });
+                        }, function (data) {
+                            Materialize.toast('Hashtags loading error, status: ' + data.status, 1000);
+                        });
+                }
+            });
+
+            $('.chips-autocomplete').on('chip.add', function (e, chip) {
+                $http({
+                    method: 'POST',
+                    url: Routes.user_photo_hashtags_path($scope.user.id, $(this).attr('id').replace('chips', '')),
+                    data: {hashtag: {tag: chip.tag}}
+                })
+                    .then(function (data) {
+                        Materialize.toast('Status' + data.status, 1000);
+                    }, function (data) {
+                        Materialize.toast('Hashtag add error, status: ' + data.status, 1000);
+                    });
+            });
+
             $scope.sortPhotosByPriority();
 
             var dropzone = new Dropzone('#dropform');
@@ -90,47 +141,6 @@ app.controller('UserCtrl', function($scope, $http, $q) {
             dropzone.on("error", function (file, errorMessage) {
                 Materialize.toast(errorMessage.msg, 3000);
             });
-
-
-            $http({
-                method: 'GET',
-                url: Routes.user_photo_hashtags_path(1, 1)
-            })
-                .then(function (data) {
-                    var chipsAutocompleteData = {};
-                    var chipsData = [];
-
-                    data.data.forEach(function(item, i, arr){
-                        chipsAutocompleteData[item.tag] = null; //setup for materialize chips autocomplete
-                    });
-
-                    $('.chip').each(function (index, element) {
-                        chipsData.push({tag: $(this).text()});
-                    });
-
-                    $('.chips-autocomplete').material_chip({
-                        data: chipsData,
-                        autocompleteOptions: {
-                            data: chipsAutocompleteData,
-                            limit: 50,
-                            minLength: 1
-                        }
-                    });
-                    $('.chips-autocomplete').on('chip.add', function (e, chip) {
-                        $http({
-                            method: 'POST',
-                            url: Routes.user_photo_hashtags_path($scope.user.id, $(this).attr('id')),
-                            data: {hashtag: {tag: chip.tag}}
-                        })
-                            .then(function (data) {
-                                Materialize.toast('Status' + data.status, 1000);
-                            }, function (data) {
-                                Materialize.toast('Hashtag add error, status: ' + data.status, 1000);
-                            });
-                    });
-                }, function (data) {
-                    Materialize.toast('Hashtags loading error, status: ' + data.status, 1000);
-                });
 
 
 

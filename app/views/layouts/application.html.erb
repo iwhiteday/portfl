@@ -22,11 +22,21 @@
               <%= link_to 'Sign up', new_session_path %>
             </li>
           <% end %>
+          <li style="height: 64px;">
+            <form ng-controller="searchformCtrl" ng-submit="navsearchSubmit();">
+              <div class="input-field">
+                <input id="search" type="search" ng-model="query" required>
+                <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                <i class="material-icons">close</i>
+              </div>
+            </form>
+          </li>
         </ul>
       </div>
     </nav>
     <p class="alert"><%= alert %></p>
 
     <div class="container"><%= yield %></div>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   </body>
 </html>

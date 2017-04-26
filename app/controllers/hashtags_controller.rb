@@ -5,9 +5,8 @@ class HashtagsController < ApplicationController
   end
 
   def create
-    @hashtag = Hashtag.find_or_create_by(tag: params[:hashtag][:tag])
-    @photo = Photo.find(params[:photo_id])
-    @photo.hashtags << @hashtag
+    Hashtag.addHashtagToPhoto(params[:hashtag][:tag], params[:photo_id])
+    render json: {}, status: 200
   end
 
   def destroy

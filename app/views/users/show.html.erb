@@ -87,10 +87,10 @@
                 <div class="modal-image">
                   <div class="modal-toolbar">
                     <div class="modal-hashtags" >
-                      <div class="chip" ng-repeat="hashtag in photo.hashtags">
+                      <div class="chip chip{{photo.id}}" ng-repeat="hashtag in photo.hashtags" ng-hide="hashtagEditMode">
                         #{{hashtag.tag}}
                       </div>
-                      <div id="{{photo.id}}" class="chips chips-autocomplete">
+                      <div id="chips{{photo.id}}" class="chips chips-autocomplete" ng-show="hashtagEditMode">
                       </div>
                     </div>
                     <div class="modal-rating" >
@@ -102,7 +102,7 @@
                       <button class="btn-rating" ng-click="rate(photo, 5);">5</button>
                     </div>
                     <div class="modal-photo-controls">
-                      <button class="btn">Edit hashtags</button>
+                      <button class="btn" ng-click="editHashtags();">Edit hashtags</button>
                       <button class="btn">Delete</button>
                     </div>
                   </div>
@@ -132,5 +132,4 @@
   <script src="<%= asset_path 'dropzone.js' %>"></script>
   <script src="<%= asset_path 'algorithmia-0.2.0.js' %>"></script>
   <script src="<%= asset_path 'dropzone_setup.js.erb' %>"></script>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </div>

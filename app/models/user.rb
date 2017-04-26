@@ -26,14 +26,60 @@ class User < ApplicationRecord
     Rails.cache.delete(cache_key)
   end
 
+  def photo_comments
+    res = ''
+    photos.each do |photo|
+      res += photo.comments.pluck(:text).join(' ') + ' '
+    end
+    res
+  end
+
+  def photo_tags
+    res = ''
+    photos.each do |photo|
+      res += photo.hashtags.pluck(:tag).join(' ') + ' '
+    end
+    res
+  end
+
+  def self.filter(params)
+    users = User.where(height: params['height']['min']..params['height']['max'], weight: params['weight']['min']..params['weight']['max'], birth: Time.new(Time.now.year - params['age']['max'])..Time.new(Time.now.year - params['age']['min']), sex: params['sex'])
+    result = []
+    preferences = read_preferences(params['preferences'])
+    if preferences.empty?
+      result = users
+    else
+      preferences.each do |preference|
+        users.each do |user|
+          if user.preferences.pluck(:value).include?(preference)
+            unless result.include?(user)
+              result.push user
+            end
+          end
+        end
+      end
+    end
+    result
+  end
+
   private
 
   def set_defaults
-    self.role ||= Role.where(title: 'user').first
+    self.role ||= Role.find_by(title: 'user')
     self.avatar_id ||= 1
   end
 
   def cache_key
     "user_#{id}"
+  end
+
+  def self.read_preferences(prefs)
+    result = []
+    prefs.keys.each do |key|
+      if prefs[key]
+        result.push key
+      end
+    end
+    result
   end
 end

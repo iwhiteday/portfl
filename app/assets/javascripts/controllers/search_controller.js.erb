@@ -1,0 +1,53 @@
+app.controller('searchformCtrl', function($scope, $http, $window){
+
+    $scope.navsearchSubmit = function() {
+        $window.location.href = Routes.search_users_path() + '?query=' + encodeURI($scope.query.replace('#', ''));
+    };
+
+});
+
+app.controller('searchCtrl', function($scope, $http){
+
+    $scope.query = decodeURI(getParameterByName('query'));
+
+    $http.get(Routes.search_users_path({format: "json"}) + '?query=' + $scope.query).
+    then(function (response) {
+        $scope.users = response.data;
+    });
+
+    $scope.searchOptions = searchOptionsDefault();
+
+    $scope.submit = function() {
+        $http({
+            method: 'POST',
+            url: Routes.filter_users_path(),
+            data: {
+                query:  $scope.query,
+                searchOptions: $scope.searchOptions
+            }
+        })
+            .then(function (response) {
+                $scope.users = response.data;
+            }, function (data) {
+                Materialize.toast(data.status, 1000);
+            });
+    }
+
+});
+
+function searchOptionsDefault() {
+    var options = {};
+    options.age = {
+        min: 20,
+        max: 40
+    };
+    options.height = {
+        min: 120,
+        max: 200
+    };
+    options.weight = {
+        min: 40,
+        max: 100
+    };
+    return options;
+}

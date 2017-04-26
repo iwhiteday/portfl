@@ -158,3 +158,26 @@ slick {
   margin: auto;
   height: 500px;
 }
+
+.search-params {
+  position: fixed;
+  right: 0;
+  top: 0;
+  background-color: #FAFAFA;
+  padding: 15px;
+  width: 250px;
+}
+
+.limit {
+  width: 100px!important;
+  text-align: center;
+}
+
+input[type=number] {
+  height: 25px!important;
+  margin: 0 0 5px 0!important;
+}
+
+[type="checkbox"] + label {
+  width: 100px;
+}

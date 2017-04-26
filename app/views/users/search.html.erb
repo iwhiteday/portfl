@@ -1,0 +1,94 @@
+<div ng-controller="searchCtrl">
+  <p id="notice"><%= notice %></p>
+
+  <h1>Users search</h1>
+
+  <div class="input-field">
+    <input id="search" type="search" ng-model="query" required>
+    <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+    <i class="material-icons">close</i>
+  </div>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Avatar</th>
+      <th>Birth</th>
+      <th>Weight</th>
+      <th>Height</th>
+      <th>Sex</th>
+      <th>Role</th>
+      <th colspan="3"></th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr ng-repeat="user in users">
+      <td ng-bind="user.name"></td>
+      <td>
+        <div class="image-container">
+          <img ng-src="{{user.avatar.url}}"/>
+        </div>
+      </td>
+      <td ng-bind="user.birth | date:'dd.MM.yyyy'"></td>
+      <td ng-bind="user.weight"></td>
+      <td ng-bind="user.height"></td>
+      <td ng-bind="user.sex"></td>
+      <td ng-bind="user.role.title"></td>
+      <td><a class="btn" ng-href="{{Routes.user_path(user.id);}}">Show</a></td>
+      <td><a class="btn" href="users/{{user.id}}/edit">Edit</a></td>
+      <td><button class="btn" ng-click="destroy(user)">Delete</button></td>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="search-params">
+    <form>
+      <p class="range-field">
+        <label for="age">Age:</label>
+        <p>
+          <input class="limit" type="number" ng-model="searchOptions.age.min">
+          <span>-</span>
+          <input class="limit" type="number" ng-model="searchOptions.age.max">
+        </p>
+        <div slider ng-from="searchOptions.age.min" ng-to="searchOptions.age.max" start="18" end="50"></div>
+      </p>
+      <p class="range-field">
+        <label for="height">Height:</label>
+        <p>
+          <input class="limit" type="number" ng-model="searchOptions.height.min">
+          <span>-</span>
+          <input class="limit" type="number" ng-model="searchOptions.height.max">
+        </p>
+        <div slider ng-from="searchOptions.height.min" ng-to="searchOptions.height.max" start="100" end="250"></div>
+      </p>
+      <p class="range-field">
+        <label for="weight">Weight:</label>
+        <p>
+          <input class="limit" type="number" ng-model="searchOptions.weight.min">
+          <span>-</span>
+          <input class="limit" type="number" ng-model="searchOptions.weight.max">
+        </p>
+        <div slider ng-from="searchOptions.weight.min" ng-to="searchOptions.weight.max" start="30" end="200"></div>
+      </p>
+      <p class="range-field">
+        <label for="weight">Sex:</label>
+        <select ng-model="searchOptions.sex">
+          <% sexes_list.each do |sex|  %>
+              <%= content_tag(:option, sex.first, value: sex.first) %>
+          <% end %>
+        </select>
+      </p>
+      <p class="range-field">
+        <% preferences_list.each do |preference|  %>
+          <input id="<%= preference.value %>" type="checkbox" ng-model="searchOptions.preferences.<%= preference.value %>"/>
+          <%= label_tag(preference.value, preference.value) %>
+        <% end %>
+      </p>
+      <button class="btn" ng-click="submit();">Submit</button>
+    </form>
+  </div>
+
+</div>
