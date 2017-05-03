@@ -5,6 +5,8 @@
     "angular-material": "latest",
     "angular-actioncable": "latest",
     "angular-nouislider": "latest",
+    "angular-tag-cloud": "latest",
+    "angular-devise": "latest",
     "materialize": "latest",
     "ng-sortable": "latest"
   }

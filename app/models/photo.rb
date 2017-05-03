@@ -22,6 +22,33 @@ class Photo < ApplicationRecord
     end
   end
 
+  def self.create_from_file(file)
+    response = Cloudinary::Uploader.upload(file)
+    unless response.key?('url')
+      render status: 500
+    end
+    @photo = Photo.new
+    @photo.user_id = params[:user_id]
+    @photo.url = response['url']
+    @photo.public_id = response['public_id']
+    @photo
+  end
+
+  def check_for_nudity
+    resp = Unirest.get "https://sightengine-nudity-and-adult-content-detection.p.mashape.com/nudity.json?url=#{url}",
+                       headers:{
+                           "X-Mashape-Key" => "JDD65uYWJ3mshZ8AzHlsyJCi909Lp1E1jKLjsn9WeFFjh8MEf1",
+                           "Accept" => "application/json"
+                       }
+    puts resp.body
+    resp.body['nudity']['safe'] > 0.3
+  end
+
+
+  def self.get_top
+    Photo.all.order(rating: :desc).limit(10)
+  end
+
   private
 
   def set_priority

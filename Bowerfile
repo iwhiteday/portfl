@@ -2,6 +2,8 @@ asset 'angular'
 asset 'angular-material'
 asset 'angular-actioncable'
 asset 'angular-nouislider'
+asset 'angular-tag-cloud'
+asset 'angular-devise'
 asset 'materialize'
 asset 'ng-sortable'
 # vim: ft=ruby

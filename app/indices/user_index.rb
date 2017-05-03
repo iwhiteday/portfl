@@ -6,5 +6,8 @@ ThinkingSphinx::Index.define :user, :with => :real_time do
 
   # attributes
   has created_at, :type => :timestamp
+  has height, weight, :type => :integer
+  has sex, :type => :string
+  has birth, :type => :timestamp
 
 end

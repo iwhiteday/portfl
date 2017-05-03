@@ -74,7 +74,7 @@ class UsersController < ApplicationController
 
   def filter
     query = params[:query]
-    @users = User.filter(params[:searchOptions])
+    @users = User.filter(query, params[:searchOptions])
     render json: @users
   end
 

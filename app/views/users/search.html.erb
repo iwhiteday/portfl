@@ -36,8 +36,8 @@
       <td ng-bind="user.height"></td>
       <td ng-bind="user.sex"></td>
       <td ng-bind="user.role.title"></td>
-      <td><a class="btn" ng-href="{{Routes.user_path(user.id);}}">Show</a></td>
-      <td><a class="btn" href="users/{{user.id}}/edit">Edit</a></td>
+      <td><a class="btn" href="/users/{{user.id}}">Show</a></td>
+      <td><a class="btn" href="/users/{{user.id}}/edit">Edit</a></td>
       <td><button class="btn" ng-click="destroy(user)">Delete</button></td>
       <td></td>
     </tr>

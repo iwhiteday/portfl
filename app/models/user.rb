@@ -16,6 +16,7 @@ class User < ApplicationRecord
     Photo.find(avatar_id)
   end
 
+  #gotta fix this
   def as_json(options={})
     Rails.cache.fetch(cache_key) do
       super({include: [:role, :avatar, :preferences, :photos => {include: [:hashtags, :comments]}], methods: :sex})
@@ -26,6 +27,7 @@ class User < ApplicationRecord
     Rails.cache.delete(cache_key)
   end
 
+  # search engine
   def photo_comments
     res = ''
     photos.each do |photo|
@@ -34,6 +36,7 @@ class User < ApplicationRecord
     res
   end
 
+  # search engine
   def photo_tags
     res = ''
     photos.each do |photo|
@@ -42,24 +45,9 @@ class User < ApplicationRecord
     res
   end
 
-  def self.filter(params)
-    users = User.where(height: params['height']['min']..params['height']['max'], weight: params['weight']['min']..params['weight']['max'], birth: Time.new(Time.now.year - params['age']['max'])..Time.new(Time.now.year - params['age']['min']), sex: params['sex'])
-    result = []
-    preferences = read_preferences(params['preferences'])
-    if preferences.empty?
-      result = users
-    else
-      preferences.each do |preference|
-        users.each do |user|
-          if user.preferences.pluck(:value).include?(preference)
-            unless result.include?(user)
-              result.push user
-            end
-          end
-        end
-      end
-    end
-    result
+  def self.filter(query, params)
+    users = User.search query, star: true, limit: 35, rank_mode: :bm25, with: create_search_params(params)
+    filter_by_preferences(users, params['preferences'])
   end
 
   private
@@ -73,11 +61,44 @@ class User < ApplicationRecord
     "user_#{id}"
   end
 
+  def self.create_search_params(params)
+    searchParams = {
+        height: params['height']['min']..params['height']['max'],
+        weight: params['weight']['min']..params['weight']['max'],
+        birth: Time.new(Time.now.year - params['age']['max'])..Time.new(Time.now.year - params['age']['min'])
+    }
+    if params['sex']
+      searchParams['sex'] = params['sex']
+    end
+    searchParams
+  end
+
   def self.read_preferences(prefs)
     result = []
-    prefs.keys.each do |key|
-      if prefs[key]
-        result.push key
+    unless prefs.nil?
+      prefs.keys.each do |key|
+        if prefs[key]
+          result.push key
+        end
+      end
+    end
+    result
+  end
+
+  def self.filter_by_preferences(users, parametersPreferences)
+    result = []
+    preferences = read_preferences(parametersPreferences)
+    if preferences.empty?
+      result = users
+    else
+      preferences.each do |preference|
+        users.each do |user|
+          if user.preferences.pluck(:value).include?(preference)
+            unless result.include?(user)
+              result.push user
+            end
+          end
+        end
       end
     end
     result

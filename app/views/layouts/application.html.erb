@@ -15,7 +15,8 @@
         <ul id="nav-mobile" class="left hide-on-med-and-down">
           <li><%= link_to 'Users', users_path %></li>
           <% if current_account %>
-            <li>You currently logged in as <b><%= current_account.user.name %></b></li>
+            <li>You currently logged in as </li>
+            <li><b><%= link_to current_account.user.name, edit_user_path(current_account.user.id) %></b></li>
             <li><%= button_to('Logout', current_account, :method => :delete) %> </li>
           <% else %>
             <li>

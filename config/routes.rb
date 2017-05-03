@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
 
+  root 'home#index'
+
+  get '/index', to: 'home#index_json'
+
   resources :sessions
 
   resources :users do
@@ -23,7 +27,6 @@ Rails.application.routes.draw do
 
   post '/upload', to: 'photos#create'
 
-  root 'users#index'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   mount ActionCable.server => '/cable'

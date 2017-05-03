@@ -1,0 +1,23 @@
+app.controller('indexCtrl', function($scope, $http){
+    $scope.data = [];
+    var r = $http.get('/index')
+        .then(function(response){
+            return response.data;
+        });
+
+    r.then(function (data) {
+        setupTagCloud(data.tags);
+        setupTopPhotos(data.photos);
+    });
+
+    function setupTopPhotos(photos) {
+        $scope.photos = photos;
+    }
+
+    function setupTagCloud(tags) {
+        for(i in tags) {
+            tags[i].link = Routes.search_users_path({query: tags[i].text});
+        }
+        $scope.data = tags;
+    }
+});

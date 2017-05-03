@@ -14,9 +14,20 @@
  *= require materialize
  *= require nouislider/jquery.nouislider
  *= require slick-carousel/slick/slick.css
+ *= require angular-tag-cloud/src/css/ng-tag-cloud
  *= require_self
  */
 
 select {
   display: block !important;
+}
+
+body {
+  background-image: url(<%= asset_path 'background.png' %>);
+}
+
+.container {
+  margin-top: 0;
+  padding: 20px;
+  background-color: #FAFAFA;
 }

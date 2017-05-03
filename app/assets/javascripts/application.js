@@ -4,17 +4,20 @@
 //= require angular-actioncable
 //= require slick-carousel
 //= require angular-slick
+//= require angular-tag-cloud
 //= require ng-sortable
 //= require materialize
 //= require nouislider
 //= require angular-nouislider
+//= require angular-devise
 //= require js-routes
 //= require_self
 //= require_tree ./controllers
 
-var app = angular.module("app", ['ngActionCable', 'as.sortable', 'slick', 'nouislider'])
-    .run(function (ActionCableConfig){
-        ActionCableConfig.debug = false;
+var app = angular.module("app", ['ngActionCable', 'as.sortable', 'slick', 'nouislider', 'ngTagCloud', 'Devise'])
+    .config(function (AuthProvider) {
+        AuthProvider.loginPath('accounts/sign_in.json');
+        AuthProvider.resourceName('account')
     });
 
 function parse_url(relative_url) {

@@ -1,5 +1,12 @@
-app.controller('UsersIndexCtrl', function($scope, $http){
+app.controller('UsersIndexCtrl', function($scope, $http, Auth){
 
+    Auth.currentUser().then(function(user) {
+        // User was logged in, or Devise returned
+        // previously authenticated session.
+        console.log(user); // => {id: 1, ect: '...'}
+    }, function(error) {
+        // unauthenticated error
+    });
 
     $http.get(Routes.users_path({format: "json"})).
         then(function (response) {
@@ -30,6 +37,10 @@ app.controller('UserCtrl', function($scope, $http, $q) {
         .then(function (response) {
             $scope.user = response.data;
             $scope.action = $scope.user.id ? 'PATCH' : 'POST';
+            if($scope.user.photos.length == 0) {
+                console.log('setup');
+                $scope.setup();
+            }
         });
 
     $scope.editAvatar = function () {
@@ -83,41 +94,39 @@ app.controller('UserCtrl', function($scope, $http, $q) {
     };
 
     $scope.setup = function () {
-        if (!$scope.isReady) {
-            $('.modal').modal({
-                ready: function(modal, trigger) {
-                    var id = modal.attr('id').replace('photo', '');
-                    console.log(id);
-                    $http({
-                        method: 'GET',
-                        url: Routes.user_photo_hashtags_path(1, 1)
-                    })
-                        .then(function (data) {
-                            var chipsAutocompleteData = {};
-                            var chipsData = [];
+        $('.modal').modal({
+            ready: function(modal, trigger) {
+                var id = modal.attr('id').replace('photo', '');
+                $http({
+                    method: 'GET',
+                    url: Routes.user_photo_hashtags_path(1, 1)
+                })
+                    .then(function (data) {
+                        var chipsAutocompleteData = {};
+                        var chipsData = [];
 
-                            data.data.forEach(function(item, i, arr){
-                                chipsAutocompleteData[item.tag] = null; //setup for materialize chips autocomplete
-                            });
-
-                            $('.chip' + id).each(function (index, element) {
-                                chipsData.push({tag: $(this).text()});
-                            });
-
-                            $('.chips-autocomplete').material_chip({
-                                data: chipsData,
-                                autocompleteOptions: {
-                                    data: chipsAutocompleteData,
-                                    limit: 50,
-                                    minLength: 1
-                                }
-                            });
-                        }, function (data) {
-                            Materialize.toast('Hashtags loading error, status: ' + data.status, 1000);
+                        data.data.forEach(function(item, i, arr){
+                            chipsAutocompleteData[item.tag] = null; //setup for materialize chips autocomplete
                         });
-                }
-            });
 
+                        $('.chip' + id).each(function (index, element) {
+                            chipsData.push({tag: $(this).text()});
+                        });
+
+                        $('.chips-autocomplete').material_chip({
+                            data: chipsData,
+                            autocompleteOptions: {
+                                data: chipsAutocompleteData,
+                                limit: 10,
+                                minLength: 2
+                            }
+                        });
+                    }, function (data) {
+                        Materialize.toast('Hashtags loading error, status: ' + data.status, 1000);
+                    });
+            }
+        });
+        if (!$scope.isReady) {
             $('.chips-autocomplete').on('chip.add', function (e, chip) {
                 $http({
                     method: 'POST',
@@ -130,7 +139,6 @@ app.controller('UserCtrl', function($scope, $http, $q) {
                         Materialize.toast('Hashtag add error, status: ' + data.status, 1000);
                     });
             });
-
             $scope.sortPhotosByPriority();
 
             var dropzone = new Dropzone('#dropform');
@@ -141,7 +149,6 @@ app.controller('UserCtrl', function($scope, $http, $q) {
             dropzone.on("error", function (file, errorMessage) {
                 Materialize.toast(errorMessage.msg, 3000);
             });
-
 
 
             $scope.isReady = true;
@@ -166,9 +173,10 @@ app.controller('UserCtrl', function($scope, $http, $q) {
     $scope.show = function(partial_name) {
         $scope.partial = partial_name;
         if(partial_name == 'slideshow'){
-            $('slick').slick('unslick');
-            $('slick').slick();
-            $('slick').slick('slickNext');
+            var slick = $('slick');
+            slick.slick('unslick');
+            slick.slick();
+            slick.slick('slickNext');
         }
     };
 
