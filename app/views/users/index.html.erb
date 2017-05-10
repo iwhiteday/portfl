@@ -6,13 +6,13 @@
   <table>
     <thead>
     <tr>
-      <th>Name</th>
-      <th>Avatar</th>
-      <th>Birth</th>
-      <th>Weight</th>
-      <th>Height</th>
-      <th>Sex</th>
-      <th>Role</th>
+      <th><%= User.human_attribute_name('name') %></th>
+      <th><%= User.human_attribute_name('avatar') %></th>
+      <th><%= User.human_attribute_name('birth') %></th>
+      <th><%= User.human_attribute_name('weight') %></th>
+      <th><%= User.human_attribute_name('height') %></th>
+      <th><%= User.human_attribute_name('sex') %></th>
+      <th><%= User.human_attribute_name('role') %></th>
       <th colspan="3"></th>
     </tr>
     </thead>
@@ -30,10 +30,9 @@
       <td ng-bind="user.height"></td>
       <td ng-bind="user.sex"></td>
       <td ng-bind="user.role.title"></td>
-      <td><a class="btn" href="users/{{user.id}}">Show</a></td>
-      <td><a class="btn" href="users/{{user.id}}/edit">Edit</a></td>
-      <td><button class="btn" ng-click="destroy(user)">Delete</button></td>
-      <td></td>
+      <td><a class="btn" href="users/{{user.id}}"><%= t('show') %></a></td>
+      <td><a class="btn" href="users/{{user.id}}/edit"><%= t('edit') %></a></td>
+      <td><button class="btn" ng-click="destroy(user)"><%= t('delete') %></button></td>
     </tr>
     </tbody>
   </table>

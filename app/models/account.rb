@@ -1,5 +1,9 @@
 class Account < ApplicationRecord
-  devise :omniauthable, :omniauth_providers => [:facebook, :twitter, :vkontakte]
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable and :omniauthable
+  devise :omniauthable, :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :trackable, :validatable,
+         :omniauth_providers => [:facebook, :twitter, :vkontakte]
   validates :email,
             :presence => true,
             :uniqueness => {
@@ -9,8 +13,7 @@ class Account < ApplicationRecord
 
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create do |account|
-      account.email = auth.info.email
-      account.user ||= User.create
+      account.email ||= auth.info.email
     end
   end
 end

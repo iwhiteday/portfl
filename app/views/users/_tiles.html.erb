@@ -1,7 +1,7 @@
-<div>
-  <button class="btn" ng-click="editPriorities();" ng-show="isDragDisabled">Edit priorities</button>
-  <button class="btn" ng-click="applyPriorities();" ng-hide="isDragDisabled">Apply</button>
-  <button class="btn" ng-click="discardPriorities();" ng-hide="isDragDisabled">Discard</button>
+<div ng-show="currentAccountPermitted">
+  <button class="btn" ng-click="editPriorities();" ng-show="isDragDisabled"><%= t('users.show.editPriorities')%></button>
+  <button class="btn" ng-click="applyPriorities();" ng-hide="isDragDisabled"><%= t('users.show.apply')%></button>
+  <button class="btn" ng-click="discardPriorities();" ng-hide="isDragDisabled"><%= t('users.show.discard')%></button>
 </div>
 <ul as-sortable="dragControlListeners" ng-model="user.photos" is-disabled="isDragDisabled">
   <li ng-repeat="photo in user.photos" as-sortable-item class="gallery-image-container">

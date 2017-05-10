@@ -1,7 +1,8 @@
 class User < ApplicationRecord
-  include ActiveModel::Serializers::JSON
 
-  enum sex: {male: 1, female: 2}
+  enum sex: {male: 1, female: 2, agender: 3, androgyne: 4, bigender: 5,
+            genderfluid: 6, genderqueer: 7, intersex: 8, neither: 9,
+            trans: 10}
   belongs_to :role
   has_many :photos, dependent: :destroy
   has_many :comments, dependent: :destroy
@@ -10,16 +11,20 @@ class User < ApplicationRecord
   has_one :account, dependent: :destroy
 
   after_initialize :set_defaults
-  after_commit :clear_cache
+  after_commit :clear_cache, ThinkingSphinx::RealTime.callback_for(:user)
 
   def avatar
     Photo.find(avatar_id)
   end
 
-  #gotta fix this
-  def as_json(options={})
-    Rails.cache.fetch(cache_key) do
-      super({include: [:role, :avatar, :preferences, :photos => {include: [:hashtags, :comments]}], methods: :sex})
+  def self.get_sex_value_by_key(i)
+    User.sexes.find {|obj| obj[1] == i}.first
+  end
+
+  def update_preferences(preferences)
+    self.preferences = []
+    preferences.each do |pref|
+      self.preferences << Preference.find(pref[:id])
     end
   end
 
@@ -62,13 +67,18 @@ class User < ApplicationRecord
   end
 
   def self.create_search_params(params)
-    searchParams = {
-        height: params['height']['min']..params['height']['max'],
-        weight: params['weight']['min']..params['weight']['max'],
-        birth: Time.new(Time.now.year - params['age']['max'])..Time.new(Time.now.year - params['age']['min'])
-    }
+    searchParams = {}
+    if params['height']
+      searchParams['height'] = params['height']['min']..params['height']['max']
+    end
+    if params['weight']
+      searchParams['weight'] = params['weight']['min']..params['weight']['max']
+    end
+    if params['age']
+      searchParams['birth'] = Time.new(Time.now.year - params['age']['max'])..Time.new(Time.now.year - params['age']['min'])
+    end
     if params['sex']
-      searchParams['sex'] = params['sex']
+      searchParams['sex'] = User.get_sex_value_by_key(params['sex']['value'].to_i)
     end
     searchParams
   end

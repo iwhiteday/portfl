@@ -16,7 +16,7 @@
 
 var app = angular.module("app", ['ngActionCable', 'as.sortable', 'slick', 'nouislider', 'ngTagCloud', 'Devise'])
     .config(function (AuthProvider) {
-        AuthProvider.loginPath('accounts/sign_in.json');
+        AuthProvider.loginPath('/accounts/sign_in.json');
         AuthProvider.resourceName('account')
     });
 

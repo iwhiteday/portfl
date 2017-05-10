@@ -36,6 +36,9 @@ gem 'omniauth-vkontakte'
 
 gem 'omniauth-facebook'
 
+gem 'active_model_serializers'
+
+gem 'russian'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'

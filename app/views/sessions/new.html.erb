@@ -1,29 +1,29 @@
-<div ng-controller="AccountCtrl">
+<div ng-controller="LoginCtrl">
   <form name="loginForm">
     <div class="field">
-      <label for="account_email">Email</label>
-      <input type="email" name="account[email]" id="account_email" ng-model="account.email">
+      <label for="account_email"><%= Account.human_attribute_name('email') %></label>
+      <input type="email" name="account[email]" id="account_email" ng-model="account.email" required>
     </div>
     <div class="field">
-      <label for="account_password">Password</label>
-      <input type="password" name="account[password]" id="account_password" ng-model="account.password">
+      <label for="account_password"><%= Account.human_attribute_name('password') %></label>
+      <input type="password" name="account[password]" id="account_password" ng-model="account.password" required>
     </div>
     <div class="actions">
-      <button ng-click="login(loginForm)">Submit</button>
+      <button class="btn" ng-click="login(loginForm)"><%= t('submit') %></button>
     </div>
   </form>
 </div>
-<ul>
+<ul class="register">
   <li>
-    <%= link_to 'Sign up with Facebook', account_facebook_omniauth_authorize_path %>
+    <%= link_to image_tag('register.png'), new_account_path %>
   </li>
   <li>
-    <%= link_to 'Sign up with Twitter', account_twitter_omniauth_authorize_path %>
+    <%= link_to image_tag('facebook.png'), account_facebook_omniauth_authorize_path %>
   </li>
   <li>
-    <%= link_to 'Sign up with Vkontakte', account_vkontakte_omniauth_authorize_path %>
+    <%= link_to image_tag('twitter.png'), account_twitter_omniauth_authorize_path %>
   </li>
   <li>
-    <%= link_to 'Sign up', new_account_path %>
+    <%= link_to image_tag('vk.png'), account_vkontakte_omniauth_authorize_path %>
   </li>
 </ul>

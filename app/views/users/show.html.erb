@@ -9,8 +9,8 @@
     <div class="row">
       <div class="col s12">
         <ul class="tabs">
-          <li class="tab col s3"><a href="#profiletab">Profile</a></li>
-          <li class="tab col s3"><a class="active" href="#portfoliotab">Portfolio</a></li>
+          <li class="tab col s3"><a href="#profiletab"><%= t('.profile')%></a></li>
+          <li class="tab col s3"><a class="active" href="#portfoliotab"><%= t('.portfolio')%></a></li>
         </ul>
       </div>
       <div id="profiletab" class="col s12">
@@ -19,11 +19,12 @@
         </div>
 
         <div id="avatar-modal" class="modal">
+          <h2><%= t('setAvatar') %></h2>
           <div class="modal-content">
             <div class="gallery" >
               <div ng-repeat="photo in user.photos" class="gallery-image-container">
                 <div class="gallery-image">
-                  <img ng-src="{{photo.url}}" class="avatar-variant" ng-click="setAvatar(photo);"/>
+                  <img ng-src="{{photo.url}}" class="avatar-variant" ng-click="setAvatar(photo);" after-render="setup"/>
                 </div>
               </div>
             </div>
@@ -32,43 +33,43 @@
 
         <div class="profile-info">
           <p>
-            <strong>Birth:</strong>
+            <strong><%= User.human_attribute_name('birth') %>:</strong>
             <span ng-bind="user.birth | date:'dd.MM.yyyy'"></span>
           </p>
 
           <p>
-            <strong>Weight:</strong>
-            <span ng-bind="user.weight"></span> kg
+            <strong><%= User.human_attribute_name('weight') %>:</strong>
+            <span ng-bind="user.weight"></span> <%= t('kg')%>
           </p>
 
           <p>
-            <strong>Height:</strong>
-            <span ng-bind="user.height"></span> cm
+            <strong><%= User.human_attribute_name('height') %>:</strong>
+            <span ng-bind="user.height"></span> <%= t('cm')%>
           </p>
 
           <p>
-            <strong>Sex:</strong>
+            <strong><%= User.human_attribute_name('sex') %>:</strong>
             <span ng-bind="user.sex"></span>
           </p>
 
           <p>
-            <strong>Preferences:</strong>
-            <span ng-repeat="preference in user.preferences"> {{preference.value}} </span>
+            <strong><%= User.human_attribute_name('preferences') %>:</strong>
+            <span class="preference-label" ng-repeat="preference in user.preferences">{{preference.value}}</span>
           </p>
         </div>
       </div>
       <div id="portfoliotab" class="col s12">
         <div class="gallery-container">
-          <div id="gallery-dropzone">
+          <div id="gallery-dropzone" ng-show="currentAccountPermitted">
             <form id="dropform" action="/upload" class="dropzone">
               <input type="hidden" name="user_id" ng-value="user.id"/>
             </form>
           </div>
           <div class="view-select">
             <p>
-              <button ng-click="show('table');">Table</button>
-              <button ng-click="show('tiles');">Tiles</button>
-              <button ng-click="show('slideshow');">Slideshow</button>
+              <button class="btn" ng-click="show('table');"><%= t('.table')%></button>
+              <button class="btn" ng-click="show('tiles');"><%= t('.tiles')%></button>
+              <button class="btn" ng-click="show('slideshow');"><%= t('.slideshow')%></button>
             </p>
           </div>
           <div class="gallery">
@@ -90,30 +91,30 @@
                       <div class="chip chip{{photo.id}}" ng-repeat="hashtag in photo.hashtags" ng-hide="hashtagEditMode">
                         #{{hashtag.tag}}
                       </div>
-                      <div id="chips{{photo.id}}" class="chips chips-autocomplete" ng-show="hashtagEditMode">
+                      <div id="chips{{photo.id}}" class="chips chips-autocomplete" ng-show="currentAccountPermitted && hashtagEditMode">
                       </div>
                     </div>
-                    <div class="modal-rating" >
-                      Rating: {{photo.rating}}
+                    <div class="modal-rating" ng-show="loggedIn">
+                      <%= t('.rating') %>: {{photo.rating}}
                       <button class="btn-rating" ng-click="rate(photo, 1);">1</button>
                       <button class="btn-rating" ng-click="rate(photo, 2);">2</button>
                       <button class="btn-rating" ng-click="rate(photo, 3);">3</button>
                       <button class="btn-rating" ng-click="rate(photo, 4);">4</button>
                       <button class="btn-rating" ng-click="rate(photo, 5);">5</button>
                     </div>
-                    <div class="modal-photo-controls">
-                      <button class="btn" ng-click="editHashtags();">Edit hashtags</button>
-                      <button class="btn">Delete</button>
+                    <div class="modal-photo-controls" ng-show="currentAccountPermitted">
+                      <button class="btn" ng-click="editHashtags();"><%= t('.editHashtags') %></button>
+                      <button class="btn" ng-click="deletePhoto(user.id, photo);"><%= t('delete') %></button>
                     </div>
                   </div>
                   <img ng-src="{{photo.url}}"/>
                 </div>
                 <div class="modal-comments">
-                  <p ng-repeat="comment in photo.comments">{{comment.user_id}} : {{comment.text}}</p>
+                  <p ng-repeat="comment in photo.comments">{{comment.user_name}} : {{comment.text}}</p>
                   <div class="comment-form">
                     <form name="commentForm" ng-controller="CommentsCtrl">
                       <input type="text" name="commentText" ng-model="commentText">
-                      <button class="btn" ng-click="sendToCommentsChannel(commentText)" after-render="setup">Send</button>
+                      <button class="btn" ng-click="sendToCommentsChannel(commentText)" after-render="setup"><%= t('send') %></button>
                     </form>
                   </div>
                 </div>

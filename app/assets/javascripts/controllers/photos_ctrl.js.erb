@@ -1,8 +1,15 @@
-app.controller('CommentsCtrl', function($scope, $http, ActionCableChannel){
+app.controller('CommentsCtrl', function($scope, $http, ActionCableChannel, Auth){
     $scope.comment = {};
+    Auth.currentUser().then(function(account) {
+        $scope.user_id = account.user_id;
+        $scope.user_name = account.user_name;
+    }, function(error) {
+        $scope.user_id = 1;
+    });
 
     var consumer = new ActionCableChannel("CommentsChannel", {'modal_id': $scope.photo.id});
     var callback = function(comment){
+        console.log(comment);
         $scope.photo.comments.push(comment);
         $scope.commentText = "";
     };
@@ -11,7 +18,7 @@ app.controller('CommentsCtrl', function($scope, $http, ActionCableChannel){
             comment = {};
             comment.text = message;
             comment.photo_id = $scope.photo.id;
-            comment.user_id = 1;
+            comment.user_id = $scope.user_id;
             consumer.send(comment);
         };
         $scope.$on("$destroy", function(){

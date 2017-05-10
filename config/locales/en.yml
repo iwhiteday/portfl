@@ -20,4 +20,51 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  home: Home
+  profile: Profile
+  currentlyLogin: You logged in as
+  logout: Sign out
+  signup: Sign in
+  navUsers: Users
+  userEdit: Edit user
+  cm: cm
+  kg: kg
+  activerecord:
+    models:
+      user: User
+    attributes:
+      user:
+        name: Name
+        birth: Birth
+        weight: Weight
+        height: Height
+        sex: Sex
+        avatar: Avatar
+        role: Permissions
+        preferences: Preferences
+        sexes:
+          male: Male
+          female: Female
+      role:
+        title:
+          user: User
+          admin: Admin
+  users:
+    show:
+      profile: Profile
+      portfolio: Portfolio
+      table: Table
+      tiles: Tiles
+      slideshow: Slideshow
+      priority: Priority
+      photo: Photo
+      posted: Posted
+      rating: Rating
+      lastComment: Last comment
+      editPriorities: Edit priorities
+      apply: Apply
+      discard: Discard
+    index:
+      show: Show
+      edit: Edit
+      delete: Delete

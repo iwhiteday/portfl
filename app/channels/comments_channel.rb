@@ -5,7 +5,9 @@ class CommentsChannel < ApplicationCable::Channel
 
   def receive(data)
     comment = Comment.create(data.fetch('message'))
-    ActionCable.server.broadcast stream_name, comment
+    serialized = ActiveModel::SerializableResource.new(comment)
+
+    ActionCable.server.broadcast stream_name, serialized.as_json
   end
 
   private

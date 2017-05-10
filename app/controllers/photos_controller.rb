@@ -12,7 +12,7 @@ class PhotosController < ApplicationController
 
   def create
     file = params[:file]
-    @photo = Photo.create_from_file(file)
+    @photo = Photo.create_from_file(file, params[:user_id])
     if @photo.check_for_nudity
       if @photo.save
         render json: {response: @photo}, status: 200
@@ -26,11 +26,16 @@ class PhotosController < ApplicationController
   end
 
   def destroy
-    @photo = Photo.find(params[id])
+    @photo = Photo.find(params[:id])
+    user = User.find(params[:user_id])
+    if @photo == user.avatar
+      user.avatar_id = 1
+      user.save
+    end
     if @photo.destroy
-      render status: 200
+      render json:{}, status: 200
     else
-      render status: 500
+      render json:{}, status: 500
     end
   end
 

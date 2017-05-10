@@ -9,18 +9,31 @@
   </head>
 
   <body>
-    <nav>
+
+  <% if current_page?(controller: 'home', action: 'index') %>
+    <div class="head">
+      <h1>Portfl</h1>
+      <h3>Lorem ipsum dolor sit amet</h3>
+    </div>
+  <% end %>
+
+  <nav>
       <div class="nav-wrapper">
         <a href="/" class="brand-logo right">Portfl</a>
         <ul id="nav-mobile" class="left hide-on-med-and-down">
-          <li><%= link_to 'Users', users_path %></li>
+          <li><%= link_to t('home'), root_path %></li>
           <% if current_account %>
-            <li>You currently logged in as </li>
+            <% if current_account.user.role.title == 'admin' %>
+              <li><%= link_to t('navUsers'), users_path %></li>
+            <% else %>
+              <li><%= link_to t('profile'), user_path(current_account.user.id) %></li>
+            <% end %>
+            <li><%= t('currentlyLogin') %></li>
             <li><b><%= link_to current_account.user.name, edit_user_path(current_account.user.id) %></b></li>
-            <li><%= button_to('Logout', current_account, :method => :delete) %> </li>
+            <li><%= button_to(t('logout'), current_account, :method => :delete) %> </li>
           <% else %>
             <li>
-              <%= link_to 'Sign up', new_session_path %>
+              <%= link_to t('signup'), new_session_path %>
             </li>
           <% end %>
           <li style="height: 64px;">
@@ -38,6 +51,7 @@
     <p class="alert"><%= alert %></p>
 
     <div class="container"><%= yield %></div>
+    <footer>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</footer>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   </body>
 </html>

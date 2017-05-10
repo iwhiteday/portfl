@@ -10,29 +10,6 @@ app.controller('AccountCtrl', function($scope, $http, $window){
         });
     }
 
-
-    $scope.submit = function(form) {
-        $scope.$submitted = true;
-
-        if(form.$invalid) {
-            Materialize.toast('Form is invalid' , 1000);
-            return;
-        }
-
-        $http({
-            method : $scope.action,
-            url : Routes.account_path($scope.account.id ? $scope.account.id : ''),
-            data : { account: $scope.account }
-        })
-            .then(function (response) {
-                Materialize.toast('Status' + response.status, 1000);
-                $window.location.href = Routes.edit_user_path(response.data.redirect_to.id);
-            }, function(data){
-                Materialize.toast(data.status, 1000);
-                console.log(data);
-            });
-    };
-
     $scope.login = function(form) {
         $scope.$submitted = true;
 
@@ -44,7 +21,7 @@ app.controller('AccountCtrl', function($scope, $http, $window){
         $http({
             method : 'POST',
             url : Routes.sessions_path(),
-            data : {'account': $scope.account}
+            data : {account: $scope.account}
         })
             .then(function (response) {
                 Materialize.toast('Status' + response.status, 1000);
@@ -54,4 +31,88 @@ app.controller('AccountCtrl', function($scope, $http, $window){
             });
     }
 
+});
+
+app.controller('NewAccountCtrl', function($scope, $http, $window){
+    $scope.submit = function(form) {
+        $scope.$submitted = true;
+
+        if(form.$invalid) {
+            Materialize.toast('Form is invalid' , 1000);
+            return;
+        }
+
+        $http({
+            method : 'POST',
+            url : Routes.account_path(),
+            data : { account: $scope.account }
+        })
+            .then(function (response) {
+                Materialize.toast('Status' + response.status, 1000);
+                $window.location.href = Routes.edit_user_path(response.data.redirect_to.id);
+            }, function(data){
+                Materialize.toast(data.status, 1000);
+                console.log(data);
+            });
+    };
+});
+
+app.controller('LoginCtrl', function($scope, $http, Auth, $window){
+    $scope.login = function(form) {
+        $scope.$submitted = true;
+
+        if(form.$invalid) {
+            Materialize.toast('Form is invalid' , 1000);
+            return;
+        }
+
+        var credentials = {
+            email: $scope.account.email,
+            password: $scope.account.password
+        };
+        var config = {
+            headers: {
+                'X-HTTP-Method-Override': 'POST'
+            }
+        };
+
+        Auth.login(credentials, config).then(function() {
+            $window.location.href = '/';
+        }, function(error) {
+            Materialize.toast(error.data.error, 3000);
+        });
+    }
+});
+
+
+app.controller('accEditCtrl', function($scope, $http, Auth, $window){
+    $scope.render = true;
+
+    $scope.submit = function(form) {
+        $scope.$submitted = true;
+
+        if(form.$invalid) {
+            Materialize.toast('Form is invalid' , 1000);
+            return;
+        }
+
+        Auth.currentUser().then(function(account) {
+            console.log(account);
+            $http({
+                method : 'PATCH',
+                url : Routes.account_path(account.id),
+                data : { oldPassword: $scope.currentPassword, newPassword: $scope.newPassword }
+            })
+                .then(function (response) {
+                    Materialize.toast('Status' + response.status, 1000);
+                    $window.location.href = '/';
+                }, function(data){
+                    Materialize.toast(data.data.msg, 1000);
+                });
+        }, function(error) {
+            $window.location.href = '/';
+        });
+
+
+    }
 });

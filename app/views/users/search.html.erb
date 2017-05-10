@@ -1,7 +1,7 @@
 <div ng-controller="searchCtrl">
   <p id="notice"><%= notice %></p>
 
-  <h1>Users search</h1>
+  <h1><%= t('search') %></h1>
 
   <div class="input-field">
     <input id="search" type="search" ng-model="query" required>
@@ -12,20 +12,20 @@
   <table>
     <thead>
     <tr>
-      <th>Name</th>
-      <th>Avatar</th>
-      <th>Birth</th>
-      <th>Weight</th>
-      <th>Height</th>
-      <th>Sex</th>
-      <th>Role</th>
-      <th colspan="3"></th>
+      <th><%= User.human_attribute_name('name') %></th>
+      <th><%= User.human_attribute_name('avatar') %></th>
+      <th><%= User.human_attribute_name('birth') %></th>
+      <th><%= User.human_attribute_name('weight') %></th>
+      <th><%= User.human_attribute_name('height') %></th>
+      <th><%= User.human_attribute_name('sex') %></th>
+      <th ng-show="isAdmin"><%= User.human_attribute_name('role') %></th>
+      <th colspan="3" ng-show="isAdmin"></th>
     </tr>
     </thead>
 
     <tbody>
     <tr ng-repeat="user in users">
-      <td ng-bind="user.name"></td>
+      <td class="username"><a href="/users/{{user.id}}"><h5>{{user.name}}</h5></a></td>
       <td>
         <div class="image-container">
           <img ng-src="{{user.avatar.url}}"/>
@@ -35,11 +35,10 @@
       <td ng-bind="user.weight"></td>
       <td ng-bind="user.height"></td>
       <td ng-bind="user.sex"></td>
-      <td ng-bind="user.role.title"></td>
-      <td><a class="btn" href="/users/{{user.id}}">Show</a></td>
-      <td><a class="btn" href="/users/{{user.id}}/edit">Edit</a></td>
-      <td><button class="btn" ng-click="destroy(user)">Delete</button></td>
-      <td></td>
+      <td ng-bind="user.role.title" ng-show="isAdmin"></td>
+      <td><a class="btn" href="/users/{{user.id}}"><%= t('show') %></a></td>
+      <td ng-show="isAdmin"><a class="btn" href="/users/{{user.id}}/edit"><%= t('edit') %></a></td>
+      <td ng-show="isAdmin"><button class="btn" ng-click="destroy(user)"><%= t('delete') %></button></td>
     </tr>
     </tbody>
   </table>
@@ -47,7 +46,8 @@
   <div class="search-params">
     <form>
       <p class="range-field">
-        <label for="age">Age:</label>
+        <input id="age" type="checkbox" ng-model="searchOptions.age.asked">
+        <label for="age"><%= User.human_attribute_name('age') %>:</label>
         <p>
           <input class="limit" type="number" ng-model="searchOptions.age.min">
           <span>-</span>
@@ -56,7 +56,8 @@
         <div slider ng-from="searchOptions.age.min" ng-to="searchOptions.age.max" start="18" end="50"></div>
       </p>
       <p class="range-field">
-        <label for="height">Height:</label>
+        <input id="height" type="checkbox" ng-model="searchOptions.height.asked">
+        <label for="height"><%= User.human_attribute_name('height') %>:</label>
         <p>
           <input class="limit" type="number" ng-model="searchOptions.height.min">
           <span>-</span>
@@ -65,7 +66,8 @@
         <div slider ng-from="searchOptions.height.min" ng-to="searchOptions.height.max" start="100" end="250"></div>
       </p>
       <p class="range-field">
-        <label for="weight">Weight:</label>
+        <input id="weight" type="checkbox" ng-model="searchOptions.weight.asked">
+        <label for="weight"><%= User.human_attribute_name('weight') %>:</label>
         <p>
           <input class="limit" type="number" ng-model="searchOptions.weight.min">
           <span>-</span>
@@ -74,20 +76,23 @@
         <div slider ng-from="searchOptions.weight.min" ng-to="searchOptions.weight.max" start="30" end="200"></div>
       </p>
       <p class="range-field">
-        <label for="weight">Sex:</label>
-        <select ng-model="searchOptions.sex">
+        <input id="sex" type="checkbox" ng-model="searchOptions.sex.asked">
+        <label for="sex"><%= User.human_attribute_name('sex') %>:</label>
+        <select ng-model="searchOptions.sex.value">
           <% sexes_list.each do |sex|  %>
-              <%= content_tag(:option, sex.first, value: sex.first) %>
+              <%= content_tag(:option, sex[1][:text], value: sex[0]) %>
           <% end %>
         </select>
       </p>
       <p class="range-field">
+        <input id="preferences" type="checkbox" ng-model="searchOptions.preferences.asked">
+        <label for="preferences"><%= User.human_attribute_name('preferences') %>: </label><br>
         <% preferences_list.each do |preference|  %>
           <input id="<%= preference.value %>" type="checkbox" ng-model="searchOptions.preferences.<%= preference.value %>"/>
           <%= label_tag(preference.value, preference.value) %>
         <% end %>
       </p>
-      <button class="btn" ng-click="submit();">Submit</button>
+      <button class="btn" ng-click="submit();"><%= t('submit') %></button>
     </form>
   </div>
 

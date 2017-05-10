@@ -23,11 +23,82 @@ select {
 }
 
 body {
-  background-image: url(<%= asset_path 'background.png' %>);
+  background-color: rgb(245, 245, 245);
+}
+
+nav {
+  background-color: white;
+  z-index: 99;
+}
+
+nav li, nav li a {
+  color: rgba(0, 0, 0, .8);
+}
+
+nav li a:hover {
+  background-color: #a6935b;
+  color: white;
+}
+
+nav .brand-logo {
+  color: #a6935b;
+}
+
+nav .input-field label i {
+  color: #444;
+}
+
+ul.tabs {
+
+}
+
+.tabs .tab a {
+  color: #444;
+}
+
+.tabs .tab a:hover,
+.tabs .tab a.active {
+  color: #a6935b;
+}
+
+.tabs .indicator {
+  background-color: #a6935b;
+}
+
+.input-field input[type=search]:focus + label i,
+.input-field input[type=search]:focus ~ .mdi-navigation-close,
+.input-field input[type=search]:focus ~ .material-icons {
+  color: #a6935b;
 }
 
 .container {
   margin-top: 0;
   padding: 20px;
-  background-color: #FAFAFA;
+}
+
+.head {
+  background: url(<%= asset_path 'head.jpg' %>) no-repeat fixed center;
+  background-size: 100%;
+  height: 550px;
+  z-index: -1;
+  width: 100%;
+  overflow: hidden;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.head img {
+  width: 100%;
+  height: auto;
+}
+
+footer {
+  padding: 75px;
+  position: relative;
+  width: 100%;
+  color: white;
+  background: rgb(145, 145, 145) url(<%= asset_path 'camera.png' %>) no-repeat center;
 }

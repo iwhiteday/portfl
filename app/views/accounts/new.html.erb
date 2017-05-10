@@ -1,1 +1,16 @@
-<%= render 'form' %>
+<div ng-controller="AccountCtrl">
+  <form name="accountEditForm">
+    <div class="field">
+      <label for="account_email">Email</label>
+      <input type="email" name="account[email]" id="account_email" ng-model="account.email">
+    </div>
+
+    <div class="field">
+      <label for="account_password">Password</label>
+      <input type="password" name="account[password]" id="account_password" ng-model="account.password">
+    </div>
+    <div class="actions">
+      <button ng-click="submit(accountEditForm)">Submit</button>
+    </div>
+  </form>
+</div>

@@ -3,7 +3,7 @@
     @comment = Comment.new(comment_params)
 
     if @comment.save
-      render json: { comment: @comment.to_json }, status: 200
+      render json: { comment: @comment }, status: 200
     else
       render json: { errors: @comment.errors, msg: @comment.errors.full_messages.join(', ')}, status: 422
     end

@@ -35,6 +35,14 @@
   height: auto;
 }
 
+.avatar-container > .modal-content {
+  padding: 0;
+}
+
+#avatar-modal > h2 {
+  margin: 15px 0 0 15px;
+}
+
 .profile {
   display: flex;
   flex-direction: row;
@@ -42,7 +50,8 @@
 }
 
 .profile-info {
-  width: 60%;
+  width: 50%;
+  margin: auto;
 }
 
 .profile-info p {
@@ -93,13 +102,14 @@
 
 .modal-comments {
   flex-basis: 450px;
+  overflow-y: scroll;
 }
 
 .modal-toolbar {
   position: fixed;
   bottom: -75px;
   left: 140px;
-  background-color: #1de9b6;
+  background-color: #eceff1;
   padding: 10px 20px;
   width: 70%;
 }
@@ -161,11 +171,16 @@ slick {
 
 .search-params {
   position: fixed;
+  z-index: 100;
   right: 0;
   top: 0;
   background-color: #FAFAFA;
   padding: 15px;
   width: 250px;
+}
+
+.username a {
+  color: #444;
 }
 
 .limit {
@@ -180,4 +195,41 @@ input[type=number] {
 
 [type="checkbox"] + label {
   width: 100px;
+}
+
+.user-edit {
+  display: flex;
+  flex-direction: row;
+}
+
+.user-edit > form {
+  width: 100%;
+}
+
+.user-edit > .avatar-container {
+  border: none;
+}
+
+.preferences {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.preference {
+  display: block;
+  margin: 10px;
+  padding: 3px;
+}
+
+#profiletab {
+  display: flex;
+}
+
+.btn {
+  background-color: #78909c !important;
+}
+
+.btn:hover {
+  background-color: #b0bec5 !important;
 }

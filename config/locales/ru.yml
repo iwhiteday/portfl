@@ -1,23 +1,78 @@
-# Files in the config/locales directory are used for internationalization
-# and are automatically loaded by Rails. If you want to use locales other
-# than English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t 'hello'
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t('hello') %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more, please read the Rails Internationalization guide
-# available at http://guides.rubyonrails.org/i18n.html.
-
 ru:
-  hello: "Hello world"
+  home: Главная
+  profile: Профиль
+  currentlyLogin: В данный момент вы вошли как
+  logout: Выйти
+  signup: Войти
+  navUsers: Пользователи
+  userEdit: Редактирование пользователя
+  cm: см
+  kg: кг
+  registration: Регистрация пользователя
+  submit: Стартуем
+  search: Поиск
+  show: Просмотреть
+  edit: Редактировать
+  delete: Удалить
+  topPhotos: Популярнейшие фото
+  activerecord:
+    models:
+      user: Пользователь
+    attributes:
+      user:
+        name: Имя
+        birth: Дата рождения
+        weight: Вес
+        height: Рост
+        sex: Пол
+        avatar: Аватар
+        role: Полномочия
+        preferences: Предпочтения
+        sexes:
+          male: Мужской
+          female: Женский
+          agender: Агендер
+          androgyne: Андрогин
+          bigender: Бигендер
+          genderfluid: Гендерфлюид
+          genderqueer: Гендерквир
+          intersex: Интерсекс
+          neither: Никто
+          trans: Трансгендер
+        age: Возраст
+      role:
+        title:
+          user: Пользователь
+          admin: Администратор
+      account:
+        email: E-Mail
+        password: Пароль
+  users:
+    show:
+      profile: Профиль
+      portfolio: Портфолио
+      table: Таблица
+      tiles: Плитка
+      slideshow: Слайдшоу
+      priority: Приоритет
+      photo: Фото
+      posted: Опубликовано
+      rating: Рейтинг
+      lastComment: Последний комментарий
+      editPriorities: Редактировать приоритет
+      apply: Применить
+      discard: Отменить
+      editHashtags: Редактировать хэштэги
+  accounts:
+    edit:
+      currentPassword: Текущий пароль
+      newPassword: Новый пароль
+      newPasswordConfirm: Подтвердите новый пароль
+      errors:
+        newPasswordMatch: Пароли не совпадают
+  devise:
+    failure:
+      account:
+        invalid: Пользователь с таким E-mail не найден либо пароли не совпадают
+        unauthenticated: Пользователь с таким E-mail не найден либо пароли не совпадают
+        not_found_in_database: Пользователь с таким E-mail не найден либо пароли не совпадают

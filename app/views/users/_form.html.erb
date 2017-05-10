@@ -1,43 +1,64 @@
-<div ng-controller="UserCtrl">
+<div ng-controller="UserCtrl" class="user-edit">
+
+
+  <div class="avatar-container">
+    <img id="avatar" ng-click="editAvatar();" ng-src="{{user.avatar.url}}"/>
+
+    <div id="avatar-modal" class="modal">
+      <h2><%= t('setAvatar') %></h2>
+      <div class="modal-content">
+        <div class="gallery" >
+          <div ng-repeat="photo in user.photos" class="gallery-image-container">
+            <div class="gallery-image">
+              <img ng-src="{{photo.url}}" class="avatar-variant" ng-click="setAvatar(photo);" after-render="setup"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a class="btn" href="<%= edit_account_path %>"><%= t('.changePassword') %></a>
+  </div>
+
   <form name="userEditForm" novalidate role="form">
     <div class="edit-form">
       <div class="field">
-        <label for="user_name">Name:</label>
+        <label for="user_name"><%= User.human_attribute_name('name') %>:</label>
         <input type="text" name="user[name]" id="user_name" ng-model="user.name">
       </div>
 
       <div class="field">
-        <label for="user_birth">Birth:</label>
+        <label for="user_birth"><%= User.human_attribute_name('birth') %>:</label>
         <input type="datetime" name="user[birth]" id="user_birth" ng-model="user.birth" placeholder="yyyy-MM-dd">
       </div>
 
       <div class="field">
-        <label for="user_weight">Weight:</label>
+        <label for="user_weight"><%= User.human_attribute_name('weight') %>:</label>
         <input type="number" name="user[weight]" id="user_weight" ng-model="user.weight">
       </div>
 
       <div class="field">
-        <label for="user_height">Height:</label>
+        <label for="user_height"><%= User.human_attribute_name('height') %>:</label>
         <input type="number" name="user[height]" id="user_height" ng-model="user.height">
       </div>
 
       <div class="field">
-        <label>Sex:</label>
+        <label><%= User.human_attribute_name('sex') %>:</label>
         <select name="user[sex]" id="user_sex" ng-model="user.sex" ng-value="user.sex">
           <% sexes_list.each do |sex|  %>
-            <%= content_tag(:option, sex.first, value: sex.first) %>
+            <%= content_tag(:option, sex[1][:text], value: sex[0]) %>
           <% end %>
         </select>
       </div>
 
       <div class="field">
-        <label>Preferences:</label>
-        <div>
+        <label><%= User.human_attribute_name('preferences') %>:</label>
+        <div class="preferences">
           <% preferences_list.each do |preference|  %>
-              <p>
+              <div class="preference">
                 <input type="checkbox" name="<%= preference.value %>" id="<%= preference.value %>" value="<%= preference.id %>" ng-checked="checkPreference('<%= preference.id %>');">
-                <%= label_tag(preference.value, preference.value) %>
-              </p>
+                <%= label_tag(preference.value, preference.value, class: 'preference-label') %>
+              </div>
           <% end %>
         </div>
       </div>
@@ -45,7 +66,7 @@
 
 
       <div class="actions">
-        <button ng-click="submit(userEditForm)">Submit</button>
+        <button class="btn" ng-click="submit(userEditForm)"><%= t('submit') %></button>
       </div>
     </div>
   </form>

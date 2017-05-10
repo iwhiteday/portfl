@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170419145140) do
+ActiveRecord::Schema.define(version: 20170503100134) do
 
   create_table "accounts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "email"
@@ -18,8 +18,19 @@ ActiveRecord::Schema.define(version: 20170419145140) do
     t.string   "provider"
     t.string   "uid"
     t.integer  "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.string   "encrypted_password",     default: "", null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.index ["email"], name: "index_accounts_on_email", unique: true, using: :btree
+    t.index ["reset_password_token"], name: "index_accounts_on_reset_password_token", unique: true, using: :btree
   end
 
   create_table "comments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -45,7 +56,7 @@ ActiveRecord::Schema.define(version: 20170419145140) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.string   "public_id",  limit: 100
-    t.float  "rating"
+    t.float    "rating",     limit: 24
     t.integer  "priority"
     t.index ["public_id"], name: "public_id_UNIQUE", unique: true, using: :btree
   end

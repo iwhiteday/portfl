@@ -5,12 +5,18 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-    respond_to do |format|
-      format.html
-      format.json {
-        @users = User.all
-        render json: @users.to_json
-      }
+    if current_account == nil
+      redirect_to root_path
+    elsif current_account.user.role.title == 'admin'
+      respond_to do |format|
+        format.html
+        format.json {
+          @users = User.all
+          render json: @users
+        }
+      end
+    else
+      redirect_to current_account.user
     end
   end
 
@@ -44,12 +50,16 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
-    @user.preferences = []
-    params[:user][:preferences].each do |pref|
-      @user.preferences << Preference.find(pref[:id])
+    local_params = user_params
+    @user.update_preferences(params[:user][:preferences])
+    if local_params[:sex].to_i > 0
+      local_params[:sex] = User.get_sex_value_by_key(local_params[:sex].to_i)
+    else
+      local_params.delete(:sex)
     end
-    if @user.update(user_params)
-      render json: { user: @user.to_json, msg: 'User successfully updated', redirect_to: 'user_path' }
+
+    if @user.update(local_params)
+      render json: { user: @user, msg: 'User successfully updated', redirect_to: 'user_path' }
     else
       render json: { errors: @user.errors, msg: @user.errors.full_messages.join(', ')}, status: 422
     end
@@ -58,8 +68,12 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-    @user.destroy
-    render json: {msg: 'User deleted'}
+    if current_account.user.role.name == 'admin'
+      @user.destroy
+      render json: {msg: 'User deleted'}
+    else
+      render json: {msg: 'Unauthorized'}, status: 401
+    end
   end
 
   def search
@@ -73,8 +87,7 @@ class UsersController < ApplicationController
   end
 
   def filter
-    query = params[:query]
-    @users = User.filter(query, params[:searchOptions])
+    @users = User.filter(params[:query], params[:searchOptions])
     render json: @users
   end
 
@@ -83,6 +96,7 @@ class UsersController < ApplicationController
     def set_user
       @user = User.find(params[:id])
     end
+
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params

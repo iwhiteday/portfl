@@ -11,6 +11,7 @@ class AccountsController < ApplicationController
 
   def create
     @account = Account.new(account_params)
+    puts account_params
     @account.user = User.new
 
     if @account.save
@@ -22,6 +23,9 @@ class AccountsController < ApplicationController
   end
 
   def edit
+    if current_account.id != params[:id].to_i
+      redirect_to '/'
+    end
   end
 
   def show
@@ -31,18 +35,25 @@ class AccountsController < ApplicationController
         redirect_to @account.user
       }
       format.json {
-        render json: @account
+        if current_account == @account || current_account&.user.role.title == 'admin'
+          render json: @account
+        else
+          render json: {}, status: 401
+        end
       }
     end
   end
 
   def update
-    current_account.email ||= account_params[:email]
-    current_account.password = account_params[:password]
-    if current_account.save
-      render json: {}, status: 200
+    if current_account.valid_password?(params[:oldPassword])
+      puts 'password correct'
+      if current_account.update(password: params[:newPassword])
+        render json: {}, status: 200
+      else
+        render json: {msg: current_account.errors.full_messages.join(', ')}, status: 500
+      end
     else
-      render json: {}, status: 500
+      render json: {msg: 'Old password doesn\'t correct'}, status: 401
     end
   end
 
@@ -54,6 +65,6 @@ class AccountsController < ApplicationController
   private
 
   def account_params
-    params.require(:account).permit(:email, :password)
+    params.require(:account).permit(:email, :password, :uid, :provider)
   end
 end

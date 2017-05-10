@@ -6,9 +6,14 @@ app.controller('searchformCtrl', function($scope, $http, $window){
 
 });
 
-app.controller('searchCtrl', function($scope, $http){
+app.controller('searchCtrl', function($scope, $http, Auth){
 
     $scope.query = decodeURI(getParameterByName('query'));
+    Auth.currentUser().then(function(account) {
+        $scope.isAdmin = account.role == 'admin';
+    }, function(error) {
+        $scope.isAdmin = false;
+    });
 
     $http.get(Routes.search_users_path({format: "json"}) + '?query=' + $scope.query).
     then(function (response) {
@@ -18,12 +23,20 @@ app.controller('searchCtrl', function($scope, $http){
     $scope.searchOptions = searchOptionsDefault();
 
     $scope.submit = function() {
+        var options = {};
+
+        for(var i in $scope.searchOptions) {
+            if($scope.searchOptions[i].asked) {
+                options[i] = $scope.searchOptions[i];
+            }
+        }
+
         $http({
             method: 'POST',
             url: Routes.filter_users_path(),
             data: {
                 query:  $scope.query,
-                searchOptions: $scope.searchOptions
+                searchOptions: options
             }
         })
             .then(function (response) {
@@ -37,17 +50,30 @@ app.controller('searchCtrl', function($scope, $http){
 
 function searchOptionsDefault() {
     var options = {};
-    options.age = {
+    options.age = getDefaultAge();
+    options.height = getDefaultHeight();
+    options.weight = getDefaultWeight();
+    options.sex = {};
+    return options;
+}
+
+function getDefaultAge() {
+    return {
         min: 20,
         max: 40
-    };
-    options.height = {
+    }
+}
+
+function getDefaultHeight() {
+    return {
         min: 120,
         max: 200
-    };
-    options.weight = {
+    }
+}
+
+function getDefaultWeight() {
+    return {
         min: 40,
         max: 100
-    };
-    return options;
+    }
 }

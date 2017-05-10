@@ -1,13 +1,5 @@
 app.controller('UsersIndexCtrl', function($scope, $http, Auth){
 
-    Auth.currentUser().then(function(user) {
-        // User was logged in, or Devise returned
-        // previously authenticated session.
-        console.log(user); // => {id: 1, ect: '...'}
-    }, function(error) {
-        // unauthenticated error
-    });
-
     $http.get(Routes.users_path({format: "json"})).
         then(function (response) {
             $scope.users = response.data;
@@ -26,22 +18,36 @@ app.controller('UsersIndexCtrl', function($scope, $http, Auth){
 });
 
 
-app.controller('UserCtrl', function($scope, $http, $q) {
+app.controller('UserCtrl', function($scope, $http, Auth) {
     var location = document.location.pathname;
     var params = parse_url(location);
+    var doOnce = true;
     $scope.isDragDisabled = true;
     $scope.hashtagEditMode = false;
     $scope.partial = 'slideshow';
+    $scope.currentAccountPermitted = false;
 
-    $http.get(Routes.user_path(params.users, {format: "json"}))
+    var promise = $http
+        .get(Routes.user_path(params.users, {format: "json"}))
         .then(function (response) {
-            $scope.user = response.data;
-            $scope.action = $scope.user.id ? 'PATCH' : 'POST';
-            if($scope.user.photos.length == 0) {
-                console.log('setup');
-                $scope.setup();
-            }
+            return response;
         });
+
+    promise.then(function (response) {
+        $scope.user = response.data;
+        $scope.action = $scope.user.id ? 'PATCH' : 'POST';
+        if($scope.user.photos.length == 0) {
+            $scope.setup();
+        }
+        Auth.currentUser().then(function(account) {
+            $scope.loggedIn = true;
+            $scope.currentAccountPermitted = account.role == 'admin' || account.user_id == $scope.user.id;
+        }, function(error) {
+            $scope.loggedIn = false;
+        });
+        $scope.configure();
+    });
+
 
     $scope.editAvatar = function () {
         $('#avatar-modal').modal('open');
@@ -94,6 +100,7 @@ app.controller('UserCtrl', function($scope, $http, $q) {
     };
 
     $scope.setup = function () {
+        //retarded materialize modals
         $('.modal').modal({
             ready: function(modal, trigger) {
                 var id = modal.attr('id').replace('photo', '');
@@ -124,9 +131,11 @@ app.controller('UserCtrl', function($scope, $http, $q) {
                     }, function (data) {
                         Materialize.toast('Hashtags loading error, status: ' + data.status, 1000);
                     });
+
             }
         });
-        if (!$scope.isReady) {
+
+        if(doOnce) {
             $('.chips-autocomplete').on('chip.add', function (e, chip) {
                 $http({
                     method: 'POST',
@@ -139,19 +148,20 @@ app.controller('UserCtrl', function($scope, $http, $q) {
                         Materialize.toast('Hashtag add error, status: ' + data.status, 1000);
                     });
             });
-            $scope.sortPhotosByPriority();
-
-            var dropzone = new Dropzone('#dropform');
-            dropzone.on("success", function (file, response) {
-                $scope.user.photos.push(response.response);
+            $('.chips-autocomplete').on('chip.delete', function (e, chip) {
+                $http({
+                    method: 'DELETE',
+                    url: Routes.user_photo_hashtag_path($scope.user.id, $(this).attr('id').replace('chips', ''), chip.tag.trim().replace('#','')),
+                    data: {hashtag: {tag: chip.tag.trim().replace('#','')}}
+                })
+                    .then(function (data) {
+                        Materialize.toast('Status' + data.status, 1000);
+                    }, function (data) {
+                        Materialize.toast('Hashtag add error, status: ' + data.status, 1000);
+                    });
             });
-
-            dropzone.on("error", function (file, errorMessage) {
-                Materialize.toast(errorMessage.msg, 3000);
-            });
-
-
-            $scope.isReady = true;
+            $scope.visualizePreferences();
+            doOnce = false;
         }
     };
 
@@ -167,6 +177,16 @@ app.controller('UserCtrl', function($scope, $http, $q) {
                 Materialize.toast('Status' + data.status, 1000);
             }, function (data) {
                 Materialize.toast(data.status, 1000);
+            });
+    };
+
+    $scope.deletePhoto = function(user_id, photo) {
+        $http({
+            method: 'DELETE',
+            url: Routes.user_photo_path(user_id, photo.id)
+        })
+            .then(function (response){
+                window.location.reload();
             });
     };
 
@@ -206,10 +226,8 @@ app.controller('UserCtrl', function($scope, $http, $q) {
     };
 
     $scope.dragControlListeners = {
-        orderChanged: function() {
-            for(var i = 0; i < $scope.user.photos.length; i++){
-                $scope.user.photos[i].priority = i;
-            }
+        orderChanged: function(){
+            $scope.setupPhotoPriorities();
         }
     };
 
@@ -235,6 +253,38 @@ app.controller('UserCtrl', function($scope, $http, $q) {
             return b.rating - a.rating;
         });
     };
+
+    $scope.visualizePreferences = function() {
+        $('.preference-label').each(function (i, obj) {
+            var value = obj.innerHTML;
+            obj.innerHTML = '<img src="/assets/' + value + '.png" alt="' + value + '" class="tooltipped" data-position="top" data-delay="50" data-tooltip="'+ value +'"/>';
+        });
+        $('.tooltipped').tooltip();
+    };
+
+    $scope.configure = function() {
+        if (!$scope.isReady) {
+            $scope.sortPhotosByPriority();
+
+            var dropzone = new Dropzone('#dropform');
+            dropzone.on("success", function (file, response) {
+                $scope.user.photos.push(response.response);
+            });
+
+            dropzone.on("error", function (file, errorMessage) {
+                Materialize.toast(errorMessage.msg, 3000);
+            });
+
+
+            $scope.isReady = true;
+        }
+    };
+
+    $scope.setupPhotoPriorities = function() {
+        for(var i = 0; i < $scope.user.photos.length; i++){
+            $scope.user.photos[i].priority = i;
+        }
+    }
 });
 
 app.directive('afterRender', ['$timeout', function ($timeout) {

@@ -22,13 +22,13 @@ class Photo < ApplicationRecord
     end
   end
 
-  def self.create_from_file(file)
+  def self.create_from_file(file, user_id)
     response = Cloudinary::Uploader.upload(file)
     unless response.key?('url')
       render status: 500
     end
     @photo = Photo.new
-    @photo.user_id = params[:user_id]
+    @photo.user_id = user_id
     @photo.url = response['url']
     @photo.public_id = response['public_id']
     @photo
@@ -46,7 +46,7 @@ class Photo < ApplicationRecord
 
 
   def self.get_top
-    Photo.all.order(rating: :desc).limit(10)
+    Photo.all.order(rating: :desc).limit(5)
   end
 
   private

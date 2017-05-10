@@ -10,7 +10,8 @@ class HashtagsController < ApplicationController
   end
 
   def destroy
-    @hashtag = Hashtag.find_by(tag: params[:hashtag][:tag])
-
+    @hashtag = Hashtag.find_by(tag: params[:id])
+    @hashtag.photos.delete(Photo.find(params[:photo_id]))
+    render json:{}, status: 200
   end
 end

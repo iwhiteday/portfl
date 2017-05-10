@@ -1,11 +1,11 @@
 <table>
   <thead>
     <tr>
-      <td><button ng-click="sortPhotosByPriority();">Priority</button></td>
-      <td>Photo</td>
-      <td>Posted</td>
-      <td><button ng-click="sortPhotosByRating();">Rating</button></td>
-      <td>Last comment</td>
+      <td><button ng-click="sortPhotosByPriority();"><%= t('users.show.priority')%></button></td>
+      <td><%= t('users.show.photo')%></td>
+      <td><%= t('users.show.posted')%></td>
+      <td><button ng-click="sortPhotosByRating();"><%= t('users.show.rating')%></button></td>
+      <td><%= t('users.show.lastComment')%></td>
     </tr>
   </thead>
   <tbody>

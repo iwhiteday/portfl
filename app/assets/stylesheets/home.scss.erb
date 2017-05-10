@@ -1,0 +1,86 @@
+// Place all the styles related to the home controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.top-container {
+  display: flex;
+  justify-content: flex-start;
+  margin: 15px 0;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #b77433;
+}
+
+.top-container:first-child {
+  padding-top: 15px;
+  border-top: 1px solid #b77433;
+}
+
+.top-container:nth-child(odd) {
+  flex-direction: row;
+  background-position: right;
+}
+
+.top-container:nth-child(even) {
+  flex-direction: row-reverse;
+}
+
+.top-photo {
+  width: 400px;
+  height: 250px;
+  overflow: hidden;
+}
+
+.top-photo img {
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+}
+
+.rating {
+  display: flex;
+  width: 250px;
+  position: relative;
+}
+
+.rating::after {
+  content: "";
+  opacity: 0.75;
+  top: 15px;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+.rating p {
+  margin: auto;
+  font-size: 1.2rem;
+  color: #444;
+}
+
+.tagcloud {
+  width: 100%;
+  height: 256px;
+  padding-left: 30px;
+  background: url(<%= asset_path('cloud.png') %>) no-repeat right;
+}
+
+
+div.ng-tag-cloud { color: #09f !important; }
+div.ng-tag-cloud a { color: inherit !important; }
+div.ng-tag-cloud a:hover { color: #0df !important; }
+div.ng-tag-cloud a:hover { color: #0cf !important; }
+div.ng-tag-cloud span.w10 { color: #37474F !important; }
+div.ng-tag-cloud span.w9 { color: #455A64 !important; }
+div.ng-tag-cloud span.w8 { color: #546E7A !important; }
+div.ng-tag-cloud span.w7 { color: #607D8B !important; }
+div.ng-tag-cloud span.w6 { color: #78909C !important; }
+div.ng-tag-cloud span.w5 { color: #90A4AE !important; }
+div.ng-tag-cloud span.w4 { color: #90A4AE !important; }
+div.ng-tag-cloud span.w3 { color: #B0BEC5 !important; }
+div.ng-tag-cloud span.w2 { color: #B0BEC5 !important; }
+div.ng-tag-cloud span.w1 { color: #B0BEC5 !important; }
+div.ng-tag-cloud {
+  font-family: "Roboto", sans-serif !important;
+}
